@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamSync - I Miei Progetti</title>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">TeamSync</div>
+            <nav class="nav-menu">
+                <ul>
+                    <li class="nav-item active">
+                        <a href="#"><span class="icon">📊</span> Progetti</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+       
+                <div class="user-profile">
+                    <div class="user-avatar">{{user.nome.[0]}}{{user.cognome.[0]}}</div>
+                    <div class="user-info">
+                        <span class="user-name">{{user.nome}} {{user.cognome}}</span>
+                    </div>
+                </div>
+                <button id="logout-btn" class="button-24" role="button">
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1>I Miei Progetti</h1>
+            </header>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamSync - Task Manager</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">TeamSync</div>
+        </div>
+        <nav class="nav-menu">
+            <a href="/dashboard/{{progettoId}}" class="nav-link {{#if (eq activePage 'dashboard')}}active{{/if}}">
+                <i class="nav-icon">📊</i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/team/{{progettoId}}" class="nav-link {{#if (eq activePage 'team')}}active{{/if}}">
+                <i class="nav-icon">👥</i>
+                <span>Team</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">{{user.nome.[0]}}{{user.cognome.[0]}}</div>
+                <div class="user-info">
+                    <span class="user-name">{{user.nome}} {{user.cognome}}</span>
+                </div>
+            </div>
+            <a href="/home" class="button-24" role="button">
+                <span>Back to Home</span>
+            </a>
+        </div>
+    </aside>
+    <!-- Main Content -->
+<main class="main-content">
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">☰</button>
+        </div>
+    </header>

@@ -1,0 +1,59 @@
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.message-container {
+    transition: all 0.3s ease;
+}
+
+.message-container.success {
+    background-color: #4CAF50;
+}
+
+.message-container.error {
+    background-color: #f44336;
+}
+
+.checkbox-group {
+    margin-bottom: 10px;
+}
+
+.select-group {
+    margin-top: 10px;
+}
+
+#other-user-assignment {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+#other-user-assignment select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+#other-user-assignment label {
+    color: #666;
+    font-size: 0.9em;
+} 

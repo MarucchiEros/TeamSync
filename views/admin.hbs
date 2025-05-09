@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamSync - Admin Panel</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">TeamSync</div>
+        </div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-link active">
+                <i class="nav-icon">📊</i>
+                <span>Dashboard Admin</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">{{user.nome.[0]}}{{user.cognome.[0]}}</div>
+                <div class="user-info">
+                    <span class="user-name">{{user.nome}} {{user.cognome}}</span>
+                </div>
+            </div>
+            <button id="logout-btn" class="button-24" role="button">
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <button class="mobile-menu-toggle" aria-label="Toggle menu">☰</button>
+                <h1 class="page-title">Pannello di Amministrazione</h1>
+            </div>
+        </header>
+
+        <!-- Admin Dashboard Overview -->
+        <section class="admin-overview">
+            <div class="stats-card">
+                <div class="stats-icon">👤</div>
+                <div class="stats-info">
+                    <h3>{{utenti.length}}</h3>
+                    <p>Utenti</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon">👥</div>
+                <div class="stats-info">
+                    <h3>{{teams.length}}</h3>
+                    <p>Team</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon">📁</div>
+                <div class="stats-info">
+                    <h3>{{progetti.length}}</h3>
+                    <p>Progetti</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+            <button class="tab-btn active" data-tab="users">Utenti</button>
+            <button class="tab-btn" data-tab="teams">Team</button>
+            <button class="tab-btn" data-tab="projects">Progetti</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Users Tab -->
+            <div class="tab-pane active" id="users-tab">
+                <div class="panel-header">
+                    <h2>Gestione Utenti</h2>
+                    <button class="btn btn-primary" id="new-user-btn">+ Nuovo Utente</button>
+                </div>
+
+                <!-- Modal per la creazione di un nuovo utente -->
+                <div id="userModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Nuovo Utente</h2>
+                            <button class="close-modal">&times;</button>
+                        </div>
+                        <form id="userForm">
+                            <div class="form-group">
+                                <label for="user-name">Nome *</label>
+                                <input type="text" id="user-name" name="nome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-surname">Cognome *</label>
+                                <input type="text" id="user-surname" name="cognome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-email">Email *</label>
+                                <input type="email" id="user-email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-password">Password *</label>
+                                <input type="password" id="user-password" name="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-role">Ruolo *</label>
+                                <select id="user-role" name="ruolo" required>
+                                    <option value="user">Utente</option>
+                                    <option value="admin">Amministratore</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary close-modal">Annulla</button>
+                                <button type="submit" class="btn btn-primary">Crea Utente</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" id="search-users" placeholder="Cerca utenti..." class="search-input">
+                    <select class="filter-select" id="filter-role">
+                        <option value="">Tutti i ruoli</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Utente</th>
+                                <th>Email</th>
+                                <th>Ruolo</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each utenti}}
+                            <tr class="user-row" data-role="{{this.ruolo}}">
+                                <td>
+                                    <div class="user-info">
+                                        <div class="owner-avatar">{{this.nome.[0]}}{{this.cognome.[0]}}</div>
+                                        <span class="user-fullname">{{this.nome}} {{this.cognome}}</span>
+                                    </div>
+                                </td>
+                                <td class="user-email">{{this.email}}</td>
+                                <td>
+                                    {{#if (eq this.ruolo 'admin')}}
+                                    <span class="badge badge-admin">Admin</span>
+                                    {{else}}
+                                    <span class="badge badge-user">User</span>
+                                    {{/if}}
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Modifica" data-id="{{this.id}}"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Elimina" data-id="{{this.id}}"><i>🗑️</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Teams Tab -->
+            <div class="tab-pane" id="teams-tab">
+                <div class="panel-header">
+                    <h2>Gestione Team</h2>
+                    <button class="btn btn-primary" id="new-team-btn">+ Nuovo Team</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" id="search-teams" placeholder="Cerca team..." class="search-input">
+                </div>
+
+                <!-- Modal per la creazione di un nuovo team -->
+                <div id="teamModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Nuovo Team</h2>
+                            <button class="close-modal">&times;</button>
+                        </div>
+                        <form id="teamForm">
+                            <div class="form-group">
+                                <label for="team-name">Nome Team *</label>
+                                <input type="text" id="team-name" name="nome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="team-description">Descrizione</label>
+                                <textarea id="team-description" name="descrizione" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Membri del Team</label>
+                                <div class="members-search">
+                                    <input type="text" id="team-members-search" placeholder="Cerca utenti..." class="search-input">
+                                </div>
+                                <div class="members-selection">
+                                    <div class="no-results">Nessun utente trovato</div>
+                                    {{#each utenti}}
+                                    <div class="member-option">
+                                        <input type="checkbox" id="member-{{this.id}}" name="membri" value="{{this.id}}">
+                                        <label for="member-{{this.id}}">
+                                            <div class="owner-avatar">{{this.nome.[0]}}{{this.cognome.[0]}}</div>
+                                            <span>{{this.nome}} {{this.cognome}}</span>
+                                        </label>
+                                    </div>
+                                    {{/each}}
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary close-modal">Annulla</button>
+                                <button type="submit" class="btn btn-primary">Crea Team</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="cards-container">
+                    {{#each teams}}
+                    <div class="team-card" data-team-id="{{this.id}}">
+                        <div class="team-header">
+                            <h3>{{this.nome}}</h3>
+                            <span class="badge badge-count">{{this.Utentes.length}} membri</span>
+                        </div>
+                        <div class="team-description">
+                            {{this.descrizione}}
+                        </div>
+                        <div class="team-members">
+                            {{#each this.Utentes}}
+                            <div class="owner-avatar" title="{{this.nome}} {{this.cognome}}">
+                                {{this.nome.[0]}}{{this.cognome.[0]}}
+                            </div>
+                            {{/each}}
+                            <div class="member-count" title="Altri membri" style="display: none;"></div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary">Gestisci</button>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div class="tab-pane" id="projects-tab">
+                <div class="panel-header">
+                    <h2>Gestione Progetti</h2>
+                    <button class="btn btn-primary" id="new-project-btn">+ Nuovo Progetto</button>
+                </div>
+
+                <!-- Modal per la creazione di un nuovo progetto -->
+                <div id="projectModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Nuovo Progetto</h2>
+                            <button class="close-modal">&times;</button>
+                        </div>
+                        <form id="projectForm">
+                            <div class="form-group">
+                                <label for="project-name">Nome Progetto *</label>
+                                <input type="text" id="project-name" name="nome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-description">Descrizione *</label>
+                                <textarea id="project-description" name="descrizione" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-deadline">Scadenza</label>
+                                <input type="date" id="project-deadline" name="scadenza">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-team">Team</label>
+                                <select id="project-team" name="team_id">
+                                    <option value="">Seleziona un team</option>
+                                    {{#each teams}}
+                                    <option value="{{this.id}}">{{this.nome}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-status">Stato *</label>
+                                <select id="project-status" name="stato" required>
+                                    <option value="attivo">Attivo</option>
+                                    <option value="completato">Completato</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary close-modal">Annulla</button>
+                                <button type="submit" class="btn btn-primary">Crea Progetto</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" id="search-projects" placeholder="Cerca progetti..." class="search-input">
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Progetto</th>
+                                <th>Team</th>
+                                <th>Membri</th>
+                                <th>Stato</th>
+                                <th>Scadenza</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each progetti}}
+                            <tr class="project-row" data-id="{{this.id}}">
+                                <td>
+                                    <div class="project-info">
+                                        <span class="project-name">{{this.nome}}</span>
+                                    </div>
+                                </td>
+                                <td class="project-team">{{this.team}}</td>
+                                <td>
+                                    <div class="members-avatars">
+                                        {{#each this.membri}}
+                                        <div class="owner-avatar" title="{{this.nome}} {{this.cognome}}">
+                                            {{this.nome.[0]}}{{this.cognome.[0]}}
+                                        </div>
+                                        {{/each}}
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-{{this.stato}}">{{this.stato}}</span></td>
+                                <td>{{this.scadenza}}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Visualizza Dashboard" data-id="{{this.id}}"><i>👁️</i></button>
+                                        <button class="btn-icon" title="Modifica" data-id="{{this.id}}"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Elimina" data-id="{{this.id}}"><i>🗑️</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script type="module" src="/js/admin.js"></script>
+{{> footer}}

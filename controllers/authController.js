@@ -1,0 +1,269 @@
+/**
+ * Controller per la gestione dell'autenticazione
+ * Gestisce le operazioni di registrazione, login e logout degli utenti
+ * Implementa validazioni di sicurezza e gestione delle sessioni
+ * 
+ * Funzionalità principali:
+ * - Registrazione nuovo utente con validazioni
+ * - Login con gestione sessione sicura
+ * - Logout con pulizia sessione
+ * - Validazione password e email
+ * - Formattazione dati utente
+ */
+
+const bcrypt = require('bcrypt');
+const logger = require('../utils/logger');
+const AppError = require('../utils/AppError');
+const securityConfig = require('../config/security');
+const messages = require('../config/messages');
+const Utente = require('../models/Utente');
+const { validateUserData } = require('../utils/validator');
+const { sendConfirmationEmail } = require('../utils/emailService');
+
+/**
+ * Formatta nome e cognome con iniziale maiuscola
+ * Esempio: "mario rossi" -> "Mario Rossi"
+ * 
+ * @param {string} name - Il nome o cognome da formattare
+ * @returns {string} Nome/cognome formattato con iniziale maiuscola
+ * 
+ * Processo:
+ * 1. Converte tutto in minuscolo
+ * 2. Divide la stringa in parole
+ * 3. Capitalizza la prima lettera di ogni parola
+ * 4. Riunisce le parole
+ */
+const formatName = (name) => {
+    return name
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+};
+
+/**
+ * Registra un nuovo utente nel sistema
+ * 
+ * @param {Object} req - Request object contenente i dati dell'utente
+ * @param {Object} res - Response object
+ * 
+ * Processo:
+ * 1. Validazione dati in input
+ * 2. Verifica email non già registrata
+ * 3. Hash della password
+ * 4. Creazione utente nel database
+ * 5. Creazione sessione
+ */
+const register = async (req, res) => {
+    try {
+        const userData = {
+            nome: req.body.nome,
+            cognome: req.body.cognome,
+            email: req.body.email,
+            password: req.body.password
+        };
+
+        // Validazione dei dati
+        const errors = validateUserData(userData);
+        if (errors) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Errori di validazione', 
+                errors 
+            });
+        }
+
+        // Verifica se l'email è già registrata
+        const existingUser = await Utente.findOne({ where: { email: userData.email } });
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: messages.auth.emailExists
+            });
+        }
+
+        // Hash della password
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+        // Formattazione nome e cognome
+        userData.nome = formatName(userData.nome);
+        userData.cognome = formatName(userData.cognome);
+
+        // Creazione utente
+        const user = await Utente.create({
+            nome: userData.nome,
+            cognome: userData.cognome,
+            email: userData.email,
+            password_hash: hashedPassword,
+            ruolo: 'user'
+        });
+
+        // Invia email di conferma
+        sendConfirmationEmail(user.email, user.nome);
+
+        // Creazione sessione
+        req.session.userId = user.id;
+        req.session.userRole = user.ruolo;
+        req.session.user = {
+            id: user.id,
+            nome: user.nome,
+            cognome: user.cognome,
+            email: user.email,
+            ruolo: user.ruolo
+        };
+
+        // Reindirizzamento in base al ruolo
+        const redirectUrl = user.ruolo === 'admin' ? '/admin' : '/dashboard';
+
+        res.status(201).json({
+            success: true,
+            message: messages.auth.registrationSuccess,
+            user: {
+                id: user.id,
+                nome: user.nome,
+                cognome: user.cognome,
+                email: user.email,
+                ruolo: user.ruolo
+            },
+            redirectUrl
+        });
+
+    } catch (error) {
+        logger.error('Errore durante la registrazione:', error);
+        res.status(500).json({
+            success: false,
+            message: messages.auth.registrationError
+        });
+    }
+};
+
+/**
+ * Effettua il login di un utente
+ * 
+ * @param {Object} req - Request object contenente email e password
+ * @param {Object} res - Response object
+ * 
+ * Processo:
+ * 1. Validazione dati in input
+ * 2. Verifica esistenza utente
+ * 3. Verifica password
+ * 4. Creazione sessione
+ */
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Validazione dei dati di login
+        const errors = validateUserData({ email, password });
+        if (errors) {
+            const loginErrors = {};
+            if (errors.email) loginErrors.email = errors.email;
+            if (errors.password) loginErrors.password = errors.password;
+            
+            if (Object.keys(loginErrors).length > 0) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Errori di validazione', 
+                    errors: loginErrors 
+                });
+            }
+        }
+
+        // Ricerca utente
+        const user = await Utente.findOne({ where: { email } });
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: messages.auth.invalidCredentials
+            });
+        }
+
+        // Verifica password
+        const validPassword = await bcrypt.compare(password, user.password_hash);
+        if (!validPassword) {
+            return res.status(401).json({
+                success: false,
+                message: messages.auth.invalidCredentials
+            });
+        }
+
+        // Creazione sessione
+        req.session.userId = user.id;
+        req.session.userRole = user.ruolo;
+        req.session.user = {
+            id: user.id,
+            nome: user.nome,
+            cognome: user.cognome,
+            email: user.email,
+            ruolo: user.ruolo
+        };
+
+        // Determina l'URL di reindirizzamento in base al ruolo
+        const redirectUrl = user.ruolo === 'admin' ? '/admin' : '/dashboard';
+
+        res.json({
+            success: true,
+            message: messages.auth.loginSuccess,
+            user: {
+                id: user.id,
+                nome: user.nome,
+                cognome: user.cognome,
+                email: user.email,
+                ruolo: user.ruolo
+            },
+            redirectUrl
+        });
+
+    } catch (error) {
+        logger.error('Errore durante il login:', error);
+        res.status(500).json({
+            success: false,
+            message: messages.auth.loginError
+        });
+    }
+};
+
+/**
+ * Effettua il logout dell'utente
+ * 
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * 
+ * Processo:
+ * 1. Distruzione sessione
+ * 2. Redirect alla pagina di login
+ */
+const logout = (req, res) => {
+    try {
+        // Salva l'URL di reindirizzamento prima di distruggere la sessione
+        const redirectUrl = '/auth';
+        
+        // Distruggi la sessione
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: messages.auth.logoutError
+                });
+            }
+
+            res.json({
+                success: true,
+                message: messages.auth.logoutSuccess,
+                redirectUrl
+            });
+        });
+    } catch (error) {
+        logger.error('Errore durante il logout:', error);
+        res.status(500).json({
+            success: false,
+            message: messages.auth.logoutError
+        });
+    }
+};
+
+module.exports = {
+    register,
+    login,
+    logout
+}; 
