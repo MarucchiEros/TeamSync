@@ -1,6 +1,6 @@
 FROM node:20-bookworm
 WORKDIR /app
-ADD . .
+COPY . .
 
 RUN npm install \
     && npm install -g serve \
