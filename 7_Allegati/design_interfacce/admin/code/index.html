@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamSync - Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">TeamSync</div>
+        </div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-link active">
+                <i class="nav-icon">📊</i>
+                <span>Dashboard Admin</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="nav-icon">👤</i>
+                <span>Gestione Utenti</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="nav-icon">👥</i>
+                <span>Gestione Team</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="nav-icon">📁</i>
+                <span>Gestione Progetti</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="nav-icon">📈</i>
+                <span>Statistiche</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="nav-icon">⚙️</i>
+                <span>Impostazioni</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <button class="mobile-menu-toggle" aria-label="Toggle menu">☰</button>
+                <h1 class="page-title">Pannello di Amministrazione</h1>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar admin">MS</div>
+                <span class="user-name">Mario Rossi <span class="admin-badge">Admin</span></span>
+            </div>
+        </header>
+
+        <!-- Admin Dashboard Overview -->
+        <section class="admin-overview">
+            <div class="stats-card">
+                <div class="stats-icon">👤</div>
+                <div class="stats-info">
+                    <h3>12</h3>
+                    <p>Utenti</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon">👥</div>
+                <div class="stats-info">
+                    <h3>4</h3>
+                    <p>Team</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon">📁</div>
+                <div class="stats-info">
+                    <h3>8</h3>
+                    <p>Progetti</p>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon">✓</div>
+                <div class="stats-info">
+                    <h3>42</h3>
+                    <p>Task Completati</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+            <button class="tab-btn active" data-tab="users">Utenti</button>
+            <button class="tab-btn" data-tab="teams">Team</button>
+            <button class="tab-btn" data-tab="projects">Progetti</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Users Tab -->
+            <div class="tab-pane active" id="users-tab">
+                <div class="panel-header">
+                    <h2>Gestione Utenti</h2>
+                    <button class="btn btn-primary">+ Nuovo Utente</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" placeholder="Cerca utenti..." class="search-input">
+                    <select class="filter-select">
+                        <option value="">Tutti i ruoli</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Utente</th>
+                                <th>Email</th>
+                                <th>Ruolo</th>
+                                <th>Team</th>
+                                <th>Stato</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="owner-avatar">MS</div>
+                                        <span>Mario Rossi</span>
+                                    </div>
+                                </td>
+                                <td>mario.rossi@example.com</td>
+                                <td><span class="badge badge-admin">Admin</span></td>
+                                <td>Tutti</td>
+                                <td><span class="badge badge-active">Attivo</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Elimina"><i>🗑️</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="owner-avatar">LV</div>
+                                        <span>Laura Verdi</span>
+                                    </div>
+                                </td>
+                                <td>laura.verdi@example.com</td>
+                                <td><span class="badge badge-user">User</span></td>
+                                <td>Design</td>
+                                <td><span class="badge badge-active">Attivo</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Elimina"><i>🗑️</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="owner-avatar">GB</div>
+                                        <span>Giovanni Bianchi</span>
+                                    </div>
+                                </td>
+                                <td>giovanni.bianchi@example.com</td>
+                                <td><span class="badge badge-user">User</span></td>
+                                <td>Sviluppo</td>
+                                <td><span class="badge badge-active">Attivo</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Elimina"><i>🗑️</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="owner-avatar">AN</div>
+                                        <span>Anna Neri</span>
+                                    </div>
+                                </td>
+                                <td>anna.neri@example.com</td>
+                                <td><span class="badge badge-user">User</span></td>
+                                <td>Marketing</td>
+                                <td><span class="badge badge-inactive">Inattivo</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Elimina"><i>🗑️</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Teams Tab -->
+            <div class="tab-pane" id="teams-tab">
+                <div class="panel-header">
+                    <h2>Gestione Team</h2>
+                    <button class="btn btn-primary">+ Nuovo Team</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" placeholder="Cerca team..." class="search-input">
+                </div>
+
+                <div class="cards-container">
+                    <div class="team-card">
+                        <div class="team-header">
+                            <h3>Team Design</h3>
+                            <span class="badge badge-count">3 membri</span>
+                        </div>
+                        <div class="team-description">
+                            Team responsabile per il design dell'interfaccia utente e l'esperienza utente.
+                        </div>
+                        <div class="team-members">
+                            <div class="owner-avatar" title="Laura Verdi">LV</div>
+                            <div class="owner-avatar" title="Marco Blu">MB</div>
+                            <div class="owner-avatar" title="Sofia Gialli">SG</div>
+                        </div>
+                        <div class="team-projects">
+                            <span class="badge badge-project">2 progetti</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary">Gestisci</button>
+                            <div class="action-buttons">
+                                <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                <button class="btn-icon" title="Elimina"><i>🗑️</i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-header">
+                            <h3>Team Sviluppo</h3>
+                            <span class="badge badge-count">4 membri</span>
+                        </div>
+                        <div class="team-description">
+                            Team responsabile per lo sviluppo del frontend e del backend dell'applicazione.
+                        </div>
+                        <div class="team-members">
+                            <div class="owner-avatar" title="Giovanni Bianchi">GB</div>
+                            <div class="owner-avatar" title="Mario Rossi">MS</div>
+                            <div class="owner-avatar" title="Paolo Verdi">PV</div>
+                            <div class="owner-avatar" title="Elena Neri">EN</div>
+                        </div>
+                        <div class="team-projects">
+                            <span class="badge badge-project">3 progetti</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary">Gestisci</button>
+                            <div class="action-buttons">
+                                <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                <button class="btn-icon" title="Elimina"><i>🗑️</i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-header">
+                            <h3>Team Marketing</h3>
+                            <span class="badge badge-count">2 membri</span>
+                        </div>
+                        <div class="team-description">
+                            Team responsabile per le strategie di marketing e comunicazione.
+                        </div>
+                        <div class="team-members">
+                            <div class="owner-avatar" title="Anna Neri">AN</div>
+                            <div class="owner-avatar" title="Luca Bianchi">LB</div>
+                        </div>
+                        <div class="team-projects">
+                            <span class="badge badge-project">1 progetto</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary">Gestisci</button>
+                            <div class="action-buttons">
+                                <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                <button class="btn-icon" title="Elimina"><i>🗑️</i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="team-header">
+                            <h3>Team QA</h3>
+                            <span class="badge badge-count">3 membri</span>
+                        </div>
+                        <div class="team-description">
+                            Team responsabile per il controllo qualità e i test dell'applicazione.
+                        </div>
+                        <div class="team-members">
+                            <div class="owner-avatar" title="Roberto Gialli">RG</div>
+                            <div class="owner-avatar" title="Chiara Verdi">CV</div>
+                            <div class="owner-avatar" title="Davide Blu">DB</div>
+                        </div>
+                        <div class="team-projects">
+                            <span class="badge badge-project">2 progetti</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary">Gestisci</button>
+                            <div class="action-buttons">
+                                <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                <button class="btn-icon" title="Elimina"><i>🗑️</i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div class="tab-pane" id="projects-tab">
+                <div class="panel-header">
+                    <h2>Gestione Progetti</h2>
+                    <button class="btn btn-primary">+ Nuovo Progetto</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" placeholder="Cerca progetti..." class="search-input">
+                    <select class="filter-select">
+                        <option value="">Tutti i team</option>
+                        <option value="design">Design</option>
+                        <option value="sviluppo">Sviluppo</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="qa">QA</option>
+                    </select>
+                    <select class="filter-select">
+                        <option value="">Tutti gli stati</option>
+                        <option value="active">Attivo</option>
+                        <option value="completed">Completato</option>
+                        <option value="archived">Archiviato</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Progetto</th>
+                                <th>Team</th>
+                                <th>Membri</th>
+                                <th>Task</th>
+                                <th>Stato</th>
+                                <th>Scadenza</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="project-info">
+                                        <span class="project-name">Progetto Web App</span>
+                                    </div>
+                                </td>
+                                <td>Sviluppo</td>
+                                <td>
+                                    <div class="members-avatars">
+                                        <div class="owner-avatar" title="Mario Rossi">MS</div>
+                                        <div class="owner-avatar" title="Giovanni Bianchi">GB</div>
+                                        <div class="owner-avatar" title="Laura Verdi">LV</div>
+                                        <span class="more-members">+2</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="task-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: 65%"></div>
+                                        </div>
+                                        <span>65% (13/20)</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-active">Attivo</span></td>
+                                <td>30/06/2023</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Visualizza Dashboard"><i>👁️</i></button>
+                                        <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Archivia"><i>📦</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="project-info">
+                                        <span class="project-name">Redesign Sito Web</span>
+                                    </div>
+                                </td>
+                                <td>Design</td>
+                                <td>
+                                    <div class="members-avatars">
+                                        <div class="owner-avatar" title="Laura Verdi">LV</div>
+                                        <div class="owner-avatar" title="Sofia Gialli">SG</div>
+                                        <div class="owner-avatar" title="Marco Blu">MB</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="task-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: 80%"></div>
+                                        </div>
+                                        <span>80% (8/10)</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-active">Attivo</span></td>
+                                <td>15/07/2023</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Visualizza Dashboard"><i>👁️</i></button>
+                                        <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Archivia"><i>📦</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="project-info">
+                                        <span class="project-name">Campagna Social Media</span>
+                                    </div>
+                                </td>
+                                <td>Marketing</td>
+                                <td>
+                                    <div class="members-avatars">
+                                        <div class="owner-avatar" title="Anna Neri">AN</div>
+                                        <div class="owner-avatar" title="Luca Bianchi">LB</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="task-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: 100%"></div>
+                                        </div>
+                                        <span>100% (12/12)</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-completed">Completato</span></td>
+                                <td>01/05/2023</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Visualizza Dashboard"><i>👁️</i></button>
+                                        <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Archivia"><i>📦</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="project-info">
+                                        <span class="project-name">Test Automazione</span>
+                                    </div>
+                                </td>
+                                <td>QA</td>
+                                <td>
+                                    <div class="members-avatars">
+                                        <div class="owner-avatar" title="Roberto Gialli">RG</div>
+                                        <div class="owner-avatar" title="Chiara Verdi">CV</div>
+                                        <div class="owner-avatar" title="Davide Blu">DB</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="task-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width: 45%"></div>
+                                        </div>
+                                        <span>45% (9/20)</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-active">Attivo</span></td>
+                                <td>10/08/2023</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="Visualizza Dashboard"><i>👁️</i></button>
+                                        <button class="btn-icon" title="Modifica"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Archivia"><i>📦</i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Simple toggle for mobile menu
+        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and panes
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Show corresponding tab pane
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId + '-tab').classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

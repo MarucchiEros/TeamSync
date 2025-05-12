@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamSync - Dashboard</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+{{> headerDashboard}}
+
+<div class="dashboard-header">
+    <div class="project-info">
+        <h1>{{progetto.nome}}</h1>
+        <span class="project-status {{#if (eq progetto.stato 'completato')}}completed{{else}}active{{/if}}">
+            {{progetto.stato}}
+        </span>
+    </div>
+</div>
+
+<!-- Modal per la creazione di una nuova task -->
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Nuova Task</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <form id="taskForm">
+            <div class="form-group">
+                <label for="titolo">Titolo *</label>
+                <input type="text" id="titolo" name="titolo" required>
+            </div>
+            <div class="form-group">
+                <label for="descrizione">Descrizione</label>
+                <textarea id="descrizione" name="descrizione" rows="3"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="peso">Peso (1-10) *</label>
+                    <input type="number" id="peso" name="peso" min="1" max="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="priorita">Priorità *</label>
+                    <select id="priorita" name="priorita" required>
+                        <option value="bassa">Bassa</option>
+                        <option value="media">Media</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="scadenza">Scadenza</label>
+                <input type="date" id="scadenza" name="scadenza">
+            </div>
+            <div class="form-group">
+                <label>Assegnazione</label>
+                {{#if (eq user.ruolo 'admin')}}
+                <div class="select-group">
+                    <select id="id_assegnato" name="userId" class="form-control">
+                        <option value="">Seleziona un utente</option>
+                        <!-- Le opzioni verranno popolate dinamicamente -->
+                    </select>
+                </div>
+                {{else}}
+                <div class="checkbox-group">
+                    <input type="checkbox" id="assegnata_a_me" name="assegnata_a_me">
+                    <label for="assegnata_a_me">Assegna a me stesso</label>
+                </div>
+                {{/if}}
+            </div>
+            <div class="form-group">
+                <label for="colore">Colore</label>
+                <div class="color-picker-container">
+                    <input type="color" id="colore" name="colore" value="#FFFFFF">
+                    <span class="color-preview"></span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary close-modal">Annulla</button>
+                <button type="submit" class="btn btn-primary">Crea Task</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="actions">
+    <button class="add-task" id="add-task" aria-label="Aggiungi task">Aggiungi Task</button>
+    <div class="filters">
+        <select class="filter-select">
+            <option value="">Filtra per priorità</option>
+            <option value="alta">Alta</option>
+            <option value="media">Media</option>
+            <option value="bassa">Bassa</option>
+        </select>
+        <select class="filter-select">
+            <option value="">Filtra per assegnatario</option>
+            <option value="me">I miei task</option>
+            <option value="unassigned">Non assegnati</option>
+        </select>
+    </div>
+</div>
+
+<div class="kanban-board">
+    <!-- Da Fare Column -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <div class="column-title">
+                <span>Da Fare</span>
+                <span class="task-count">0</span>
+            </div>
+            <button class="add-task" aria-label="Aggiungi task">+</button>
+        </div>
+        <div class="task-list">
+            <!-- Le task verranno inserite dinamicamente qui -->
+        </div>
+    </div>
+
+    <!-- In Corso Column -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <div class="column-title">
+                <span>In Corso</span>
+                <span class="task-count">0</span>
+            </div>
+        </div>
+        <div class="task-list">
+            <!-- Le task verranno inserite dinamicamente qui -->
+        </div>
+    </div>
+
+    <!-- In Revisione Column -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <div class="column-title">
+                <span>In Revisione</span>
+                <span class="task-count">0</span>
+            </div>
+        </div>
+        <div class="task-list">
+            <!-- Le task verranno inserite dinamicamente qui -->
+        </div>
+    </div>
+
+    <!-- Completati Column -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <div class="column-title">
+                <span>Completati</span>
+                <span class="task-count">0</span>
+            </div>
+        </div>
+        <div class="task-list">
+            <!-- Le task verranno inserite dinamicamente qui -->
+        </div>
+    </div>
+</div>
+</main>
+
+<!-- Socket.IO deve essere caricato prima degli altri script -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    // Inizializza Socket.IO con l'URL del server
+    const socket = io('http://localhost:3000', {
+        withCredentials: true,
+        transports: ['websocket', 'polling']
+    });
+</script>
+
+<script type="module" src="/js/task.js"></script>
+
+{{> footer}}

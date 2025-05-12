@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamSync - Verifica codice</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <div class="logo">
+                <span class="logo-text">TeamSync</span>
+            </div>
+
+            <div class="forms-container">
+                <p style="text-align:center; color: var(--text-secondary); margin-bottom: 24px; font-size: 15px;">Inserisci il codice che hai ricevuto via email per continuare il reset della password.</p>
+                <form class="form active" id="verify-form">
+                    <div id="verify-message"></div>
+                    <div class="form-group">
+                        <label for="reset-code">Codice di verifica</label>
+                        <div class="input-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            <input type="text" id="reset-code" name="code" placeholder="Inserisci il codice" required maxlength="100" autocomplete="one-time-code">
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Verifica codice</button>
+                    <div style="text-align:center; margin-top:18px;">
+                        <a href="/login" class="forgot-link">Torna al login</a> |
+                        <a href="/reset-password" class="forgot-link">Richiedi nuovo codice</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/js/modules/resetPasswordFlow.js"></script>
+</html>
