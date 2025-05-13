@@ -514,7 +514,29 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+    .main-content {
+        padding: 0.7rem;
+    }
+    .kanban-board {
+        gap: 0.7rem;
+    }
+    .stat-card, .kanban-column {
+        padding: 0.7rem;
+    }
+    .actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.7rem;
+    }
+    .filters {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 600px) {
     body {
         grid-template-columns: 1fr;
     }
@@ -531,6 +553,7 @@ body {
 
     .main-content {
         grid-column: 1;
+        padding: 0.3rem;
     }
 
     .mobile-menu-toggle {
@@ -539,19 +562,74 @@ body {
 
     .kanban-board {
         grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .kanban-column {
+        padding: 0.5rem;
+        border-radius: 10px;
     }
 
     .actions {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        gap: 0.5rem;
     }
 
     .filters {
-        width: 100%;
+        flex-direction: column;
+        gap: 0.3rem;
     }
 
     .filter-select {
-        flex: 1;
+        font-size: 0.95rem;
+        padding: 0.4rem;
+    }
+
+    .data-table th, .data-table td {
+        padding: 7px 4px;
+        font-size: 13px;
+    }
+
+    .badge, .badge-admin, .badge-user {
+        font-size: 0.8rem;
+        padding: 0.12rem 0.4rem;
+    }
+
+    .btn, .btn-primary, .btn-secondary {
+        font-size: 0.97rem;
+        padding: 0.45rem 0.7rem;
+        border-radius: 7px;
+    }
+
+    .project-status {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .sidebar .close-sidebar {
+        display: block;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #fff;
+        z-index: 1100;
+        cursor: pointer;
+    }
+}
+
+@media (min-width: 769px) {
+    .sidebar .close-sidebar {
+        display: none !important;
     }
 }
 
@@ -1079,4 +1157,62 @@ input, select, textarea {
 
 .project-status.completed::before {
     background-color: #3b82f6;
+}
+
+.user-edit-form {
+    position: absolute;
+    left: 50%;
+    bottom: 60px;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #222;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    padding: 20px 24px 16px 24px;
+    min-width: 220px;
+    z-index: 999;
+    animation: fadeInUserForm 0.2s;
+}
+
+@keyframes fadeInUserForm {
+    from { opacity: 0; transform: translateX(-50%) scale(0.95);}
+    to   { opacity: 1; transform: translateX(-50%) scale(1);}
+}
+
+.user-edit-form label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #333;
+}
+
+.user-edit-form input {
+    width: 100%;
+    padding: 7px 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.user-edit-form button {
+    width: 100%;
+    margin-top: 6px;
+}
+
+/* Overlay sidebar mobile fix: nessun margine o padding, posizione assoluta */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(30,39,56,0.45);
+  z-index: 1000;
+  display: none;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.sidebar-overlay.active {
+  display: block;
 }

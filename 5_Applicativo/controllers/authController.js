@@ -235,30 +235,15 @@ const login = async (req, res) => {
  */
 const logout = (req, res) => {
     try {
-        // Salva l'URL di reindirizzamento prima di distruggere la sessione
-        const redirectUrl = '/auth';
-        
-        // Distruggi la sessione
         req.session.destroy((err) => {
             if (err) {
-                return res.status(500).json({
-                    success: false,
-                    message: messages.auth.logoutError
-                });
+                return res.status(500).render('auth', { activeTab: 'login', error: 'Errore durante il logout' });
             }
-
-            res.json({
-                success: true,
-                message: messages.auth.logoutSuccess,
-                redirectUrl
-            });
+            res.redirect('/login');
         });
     } catch (error) {
         logger.error('Errore durante il logout:', error);
-        res.status(500).json({
-            success: false,
-            message: messages.auth.logoutError
-        });
+        res.status(500).render('auth', { activeTab: 'login', error: 'Errore durante il logout' });
     }
 };
 

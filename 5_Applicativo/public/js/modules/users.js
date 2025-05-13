@@ -119,6 +119,13 @@ export class UserManager {
 
                 if (!this.currentUserId) {
                     formData.password = document.getElementById('user-password').value;
+                    // Validazione password lato frontend
+                    const password = formData.password;
+                    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                    if (!passwordRegex.test(password)) {
+                        showMessage('La password deve essere di almeno 8 caratteri, contenere almeno una lettera maiuscola, una minuscola, un numero e un carattere speciale.', false);
+                        return;
+                    }
                 }
 
                 try {

@@ -9,7 +9,8 @@
 </head>
 <body>
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
+        <button class="close-sidebar" id="closeSidebar" aria-label="Chiudi menu">&times;</button>
         <div class="sidebar-header">
             <div class="logo">TeamSync</div>
         </div>
@@ -27,9 +28,11 @@
                     <span class="user-name">{{user.nome}} {{user.cognome}}</span>
                 </div>
             </div>
-            <button id="logout-btn" class="button-24" role="button">
-                <span>Logout</span>
-            </button>
+            <form id="logout-form" action="/logout" method="POST" style="margin:0;">
+                <button id="logout-btn" class="button-24" role="button" type="submit">
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -144,21 +147,21 @@
                         <tbody>
                             {{#each utenti}}
                             <tr class="user-row" data-role="{{this.ruolo}}">
-                                <td>
+                                <td data-label="Utente">
                                     <div class="user-info">
                                         <div class="owner-avatar">{{this.nome.[0]}}{{this.cognome.[0]}}</div>
                                         <span class="user-fullname">{{this.nome}} {{this.cognome}}</span>
                                     </div>
                                 </td>
-                                <td class="user-email">{{this.email}}</td>
-                                <td>
+                                <td class="user-email" data-label="Email">{{this.email}}</td>
+                                <td data-label="Ruolo">
                                     {{#if (eq this.ruolo 'admin')}}
                                     <span class="badge badge-admin">Admin</span>
                                     {{else}}
                                     <span class="badge badge-user">User</span>
                                     {{/if}}
                                 </td>
-                                <td>
+                                <td data-label="Azioni">
                                     <div class="action-buttons">
                                         <button class="btn-icon" title="Modifica" data-id="{{this.id}}"><i>✏️</i></button>
                                         <button class="btn-icon" title="Elimina" data-id="{{this.id}}"><i>🗑️</i></button>

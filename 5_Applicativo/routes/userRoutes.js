@@ -5,6 +5,7 @@ const Utente = require('../models/Utente');
 const { Team, TeamUtente } = require('../models/Team');
 const bcrypt = require('bcrypt');
 const { sendAccountDeletionEmail } = require('../utils/emailService');
+const { validateUserData } = require('../utils/validator');
 
 // Funzione per verificare l'autenticazione
 const checkAuth = (req, res, next) => {
@@ -93,6 +94,12 @@ router.get('/team/:teamId', checkAuth, async (req, res) => {
 router.post('/', checkAuth, async (req, res) => {
     try {
         const { nome, cognome, email, password, ruolo } = req.body;
+
+        // Validazione dati utente
+        const errors = validateUserData({ nome, cognome, email, password, ruolo });
+        if (errors) {
+            return res.status(400).json({ message: Object.values(errors).join('. ') });
+        }
 
         // Verifica se l'email è già in uso
         const existingUser = await Utente.findOne({ 

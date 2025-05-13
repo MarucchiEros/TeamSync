@@ -36,6 +36,21 @@ document.addEventListener('DOMContentLoaded', () => {
         showMessage(successMsg, true);
         localStorage.removeItem('adminSuccessMessage');
     }
+
+    // Gestione apertura/chiusura sidebar mobile
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.querySelector('.mobile-menu-toggle');
+    const closeBtn = document.getElementById('closeSidebar');
+    if (openBtn && sidebar) {
+        openBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+        });
+    }
+    if (closeBtn && sidebar) {
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+    }
 });
 
 function showMessage(message, isSuccess = true) {

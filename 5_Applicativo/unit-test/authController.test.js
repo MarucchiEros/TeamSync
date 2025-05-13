@@ -195,7 +195,9 @@ describe('authController.logout', () => {
     };
     res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn()
+      json: jest.fn(),
+      render: jest.fn(),
+      redirect: jest.fn()
     };
   });
 
@@ -204,11 +206,7 @@ describe('authController.logout', () => {
 
     authController.logout(req, res);
 
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      success: true,
-      message: messages.auth.logoutSuccess,
-      redirectUrl: '/auth'
-    }));
+    expect(res.redirect).toHaveBeenCalledWith('/login');
   });
 
   it('risponde con errore se destroy fallisce', () => {
@@ -217,10 +215,7 @@ describe('authController.logout', () => {
     authController.logout(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      success: false,
-      message: messages.auth.logoutError
-    }));
+    expect(res.render).toHaveBeenCalledWith('auth', { activeTab: 'login', error: 'Errore durante il logout' });
   });
 
   it('risponde con errore 500 in caso di eccezione', () => {
@@ -229,9 +224,6 @@ describe('authController.logout', () => {
     authController.logout(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      success: false,
-      message: messages.auth.logoutError
-    }));
+    expect(res.render).toHaveBeenCalledWith('auth', { activeTab: 'login', error: 'Errore durante il logout' });
   });
 }); 

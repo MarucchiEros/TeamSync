@@ -25,6 +25,7 @@ const logger = require('../utils/logger');
 const Utente = require('../models/Utente');
 const { sendProjectAssignmentEmail } = require('../utils/emailService');
 const { sequelize } = require('../config/database');
+const { validateProjectData } = require('../utils/validator');
 
 /**
  * Middleware di autenticazione
@@ -169,14 +170,11 @@ router.get('/:id', isAuthenticated, async (req, res) => {
  */
 router.post('/', isAuthenticated, async (req, res) => {
     try {
-        const { nome, descrizione, team_id, scadenza } = req.body;
-
-        // Validazione dei dati in input
-        if (!nome || nome.trim() === '') {
-            return res.status(400).json({
-                success: false,
-                message: 'Il nome del progetto è obbligatorio'
-            });
+        const { nome, descrizione, team_id, scadenza, stato } = req.body;
+        // Validazione dati progetto
+        const errors = validateProjectData({ nome, descrizione, team_id, scadenza, stato });
+        if (errors) {
+            return res.status(400).json({ success: false, message: Object.values(errors).join('. ') });
         }
 
         // Normalizzazione della data di scadenza
@@ -305,6 +303,11 @@ router.post('/', isAuthenticated, async (req, res) => {
 router.put('/:id', isAuthenticated, async (req, res) => {
     try {
         const { nome, descrizione, scadenza, team_id, stato } = req.body;
+        // Validazione dati progetto
+        const errors = validateProjectData({ nome, descrizione, team_id, scadenza, stato });
+        if (errors) {
+            return res.status(400).json({ success: false, message: Object.values(errors).join('. ') });
+        }
         const progetto = await Progetto.findByPk(req.params.id);
 
         if (!progetto) {
@@ -476,12 +479,11 @@ router.put('/:id/status', isAuthenticated, async (req, res) => {
  */
 router.delete('/:id', isAuthenticated, async (req, res) => {
     try {
-        const progetto = await Progetto.findOne({
-            where: {
-                id: req.params.id,
-                creato_da: req.session.user.id
-            }
-        });
+        const where = { id: req.params.id };
+        if (req.session.user.ruolo !== 'admin') {
+            where.creato_da = req.session.user.id;
+        }
+        const progetto = await Progetto.findOne({ where });
 
         if (!progetto) {
             return res.status(404).json({

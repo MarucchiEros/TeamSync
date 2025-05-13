@@ -24,6 +24,8 @@ const { Team, TeamUtente } = require('../models/Team');
 const Progetto = require('../models/Project');
 const TaskJson = require('../models/TaskJson');
 const { Op } = require('sequelize');
+const bcrypt = require('bcrypt');
+const { validateUserData, validateTeamData } = require('../utils/validator');
 
 /**
  * Middleware di autenticazione
@@ -211,7 +213,8 @@ router.get('/home', isAuthenticated, async (req, res) => {
             user: req.session.user,
             progetti: progettiFormattati,
             task_completate,
-            progetti_in_scadenza
+            progetti_in_scadenza,
+            activePage: 'progetti'
         });
     } catch (error) {
         logger.error(`Errore nel rendering della home page: ${error.message}`);
@@ -324,6 +327,11 @@ router.get('/admin', async (req, res) => {
 router.post('/api/teams', isAdmin, async (req, res) => {
     try {
         const { nome, descrizione, membri } = req.body;
+        // Validazione dati team
+        const errors = validateTeamData({ nome, descrizione, membri });
+        if (errors) {
+            return res.status(400).json({ success: false, message: Object.values(errors).join('. ') });
+        }
 
         // Crea il team
         const team = await Team.create({
@@ -419,6 +427,11 @@ router.get('/api/teams/:id', isAdmin, async (req, res) => {
 router.put('/api/teams/:id', isAdmin, async (req, res) => {
     try {
         const { nome, descrizione, membri } = req.body;
+        // Validazione dati team
+        const errors = validateTeamData({ nome, descrizione, membri });
+        if (errors) {
+            return res.status(400).json({ success: false, message: Object.values(errors).join('. ') });
+        }
         const team = await Team.findByPk(req.params.id);
 
         if (!team) {
@@ -505,8 +518,9 @@ router.get('/dashboard/:id', isAuthenticated, async (req, res) => {
         // Verifica che l'utente sia autorizzato a vedere il progetto
         const isCreator = progetto.creato_da === req.session.user.id;
         const isTeamMember = progetto.Team && progetto.Team.Utentes.some(u => u.id === req.session.user.id);
+        const isAdmin = req.session.user.ruolo === 'admin';
 
-        if (!isCreator && !isTeamMember) {
+        if (!isCreator && !isTeamMember && !isAdmin) {
             return res.status(403).redirect('/home');
         }
 
@@ -606,6 +620,57 @@ router.get('/team/:progettoId', isAuthenticated, async (req, res) => {
         res.status(500).render('error', {
             message: 'Errore nel recupero dei membri del team'
         });
+    }
+});
+
+// Rotta per il profilo utente
+router.get('/profilo', isAuthenticated, (req, res) => {
+    res.render('profile', { user: req.session.user, activePage: 'profilo' });
+});
+
+// Funzione per formattare nome/cognome con solo la prima lettera maiuscola
+function formatName(name) {
+    return name
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+// Rotta per aggiornare il profilo utente
+router.post('/profilo/update', isAuthenticated, async (req, res) => {
+    try {
+        const { nome, cognome, email, password } = req.body;
+        // Validazione completa dei dati (inclusa password se presente)
+        const errors = validateUserData({ nome, cognome, email, password });
+        if (errors) {
+            return res.render('profile', { user: req.session.user, error: Object.values(errors).join('. '), activePage: 'profilo' });
+        }
+        const utente = await Utente.findByPk(req.session.user.id);
+        if (!utente) {
+            return res.status(404).render('profile', { user: req.session.user, error: 'Utente non trovato', activePage: 'profilo' });
+        }
+        // Controllo email già in uso da altri
+        if (email !== utente.email) {
+            const existingUser = await Utente.findOne({ where: { email } });
+            if (existingUser) {
+                return res.render('profile', { user: req.session.user, error: 'Email già in uso', activePage: 'profilo' });
+            }
+        }
+        utente.nome = formatName(nome);
+        utente.cognome = formatName(cognome);
+        utente.email = email;
+        if (password) {
+            utente.password_hash = await bcrypt.hash(password, 10);
+        }
+        await utente.save();
+        // Aggiorna la sessione
+        req.session.user.nome = utente.nome;
+        req.session.user.cognome = utente.cognome;
+        req.session.user.email = utente.email;
+        res.render('profile', { user: req.session.user, success: 'Profilo aggiornato con successo!', activePage: 'profilo' });
+    } catch (error) {
+        res.status(500).render('profile', { user: req.session.user, error: 'Errore durante l\'aggiornamento del profilo', activePage: 'profilo' });
     }
 });
 

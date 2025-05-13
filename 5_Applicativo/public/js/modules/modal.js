@@ -31,7 +31,7 @@ export class TaskModal {
         this.closeButtons = document.querySelectorAll('.close-modal');
         this.teamMembers = [];
         this.projectId = projectId;
-
+        this.deleteBtn = document.getElementById('delete-task-btn');
         this.initEventListeners();
     }
 
@@ -125,6 +125,11 @@ export class TaskModal {
         const modalTitle = this.modal.querySelector('.modal-header h2');
         modalTitle.textContent = 'Nuova Task';
         document.querySelector('.color-preview').style.backgroundColor = '#FFFFFF';
+        // Nascondi il pulsante elimina quando si resetta il form
+        if (this.deleteBtn) {
+            this.deleteBtn.style.display = 'none';
+            this.deleteBtn.onclick = null;
+        }
     }
 
     /**
@@ -147,7 +152,7 @@ export class TaskModal {
 
         // Gestione dell'assegnazione in base al ruolo
         if (currentUser.ruolo === 'admin') {
-        const selectUtente = form.querySelector('#id_assegnato');
+            const selectUtente = form.querySelector('#id_assegnato');
             if (selectUtente) {
                 // Carica gli utenti del team
                 const response = await fetch(`/api/projects/${this.projectId}/team-members`);
@@ -156,15 +161,36 @@ export class TaskModal {
                 }
                 const data = await response.json();
                 this.teamMembers = data.members;
-                
                 // Popola la select con gli utenti del team
                 this.populateUserSelect(selectUtente, taskData.userId);
+            }
+            // Mostra il pulsante elimina solo se siamo in modifica
+            if (this.deleteBtn) {
+                this.deleteBtn.style.display = 'inline-block';
+                this.deleteBtn.onclick = async () => {
+                    if (confirm('Sei sicuro di voler eliminare questa task?')) {
+                        // Chiama la funzione deleteTask del TaskManager globale
+                        if (window.taskManager) {
+                            try {
+                                await window.taskManager.deleteTask(taskData.id);
+                                this.close();
+                            } catch (e) {
+                                alert('Errore durante l\'eliminazione della task');
+                            }
+                        }
+                    }
+                };
             }
         } else {
             const assegnataAMe = form.querySelector('#assegnata_a_me');
             if (assegnataAMe) {
                 // Se la task è assegnata all'utente corrente, seleziona il checkbox
                 assegnataAMe.checked = taskData.userId === currentUser.id;
+            }
+            // Nascondi il pulsante elimina per i non admin
+            if (this.deleteBtn) {
+                this.deleteBtn.style.display = 'none';
+                this.deleteBtn.onclick = null;
             }
         }
 
