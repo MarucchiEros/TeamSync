@@ -1,5 +1,17 @@
 /**
- * Modulo per la gestione dei filtri delle task
+ * Modulo per la gestione dei filtri delle task nella board Kanban
+ * Permette di filtrare le task per priorità e assegnazione tramite select UI
+ *
+ * Funzionalità principali:
+ * - Filtro per priorità (alta, media, bassa)
+ * - Filtro per assegnazione (a me, non assegnate)
+ * - Evidenziazione delle card filtrate
+ * - Gestione dinamica della visibilità delle task
+ *
+ * Esempio di utilizzo:
+ * ```js
+ * const filters = new TaskFilters(taskManager);
+ * ```
  */
 export class TaskFilters {
     constructor(taskManager) {

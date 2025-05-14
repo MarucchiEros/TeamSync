@@ -9,38 +9,46 @@
 </head>
 
 <body>
+    <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <button class="close-sidebar" id="closeSidebar" aria-label="Chiudi menu">&times;</button>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <button class="close-sidebar" id="closeSidebar" aria-label="Chiudi menu">&times;</button>
+        <div class="sidebar-header">
             <div class="logo">TeamSync</div>
-            <nav class="nav-menu">
-                <ul>
-                    <li class="nav-item {{#if (eq activePage 'progetti')}}active{{/if}}">
-                        <a href="/home"><span class="icon">📊</span> Progetti</a>
-                    </li>
-                    <li class="nav-item {{#if (eq activePage 'profilo')}}active{{/if}}">
-                        <a href="/profilo"><span class="icon">👤</span> Profilo</a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="sidebar-footer">
-                <div class="user-profile">
-                    <div class="user-avatar">{{user.nome.[0]}}{{user.cognome.[0]}}</div>
-                    <div class="user-info">
-                        <span class="user-name">{{user.nome}} {{user.cognome}}</span>
-                    </div>
+        </div>
+        <nav class="nav-menu">
+            <a href="/home" class="nav-link {{#if (eq activePage 'progetti')}}active{{/if}}">
+                <i class="nav-icon">📊</i>
+                <span>Progetti</span>
+            </a>
+            <a href="/profilo" class="nav-link {{#if (eq activePage 'profilo')}}active{{/if}}">
+                <i class="nav-icon">👤</i>
+                <span>Profilo</span>
+            </a>
+            <a href="/contatti" class="nav-link {{#if (eq activePage 'contatti')}}active{{/if}}">
+                <i class="nav-icon">✉️</i>
+                <span>Contatti</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">{{user.nome.[0]}}{{user.cognome.[0]}}</div>
+                <div class="user-info">
+                    <span class="user-name">{{user.nome}} {{user.cognome}}</span>
                 </div>
-                <form id="logout-form" action="/logout" method="POST" style="margin:0;">
-                    <button id="logout-btn" class="button-24" role="button" type="submit">
-                        <span>Logout</span>
-                    </button>
-                </form>
             </div>
-        </aside>
+            <form id="logout-form" action="/logout" method="POST" style="margin:0;">
+                <button id="logout-btn" class="button-24" role="button" type="submit">
+                    <span>Logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+    <div class="container">
         <div class="main-content">
             <header class="header">
-                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Apri menu">☰</button>
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Apri menu">☰</button>
+                </div>
             </header>
-

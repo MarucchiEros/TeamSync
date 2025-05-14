@@ -11,9 +11,28 @@ afterAll(() => {
   console.error = originalConsoleError;
 });
 
+/**
+ * Test principali per la classe TaskModal e le sue funzionalità di gestione modale delle task.
+ * 
+ * I test coprono la gestione del form, la visualizzazione/nascondimento del modal,
+ * la popolazione delle select, la gestione degli errori di fetch e la logica di apertura in modifica.
+ * 
+ * Viene utilizzato Jest come framework di testing.
+ * 
+ * @module TaskModalTest
+ */
+
+/**
+ * Suite di test per la classe TaskModal.
+ * Verifica la corretta gestione del DOM, delle chiamate fetch e dello stato del form.
+ */
 describe('TaskModal', () => {
   let modalDiv, form, assegnazioneGroup, colorPreview, modalHeader, closeBtn, addBtn;
   beforeEach(() => {
+    /**
+     * Setup comune prima di ogni test.
+     * Inizializza il DOM simulato con gli elementi necessari per la TaskModal.
+     */
     document.body.innerHTML = `
       <div id="taskModal">
         <div class="modal-header"><h2></h2></div>
@@ -49,6 +68,9 @@ describe('TaskModal', () => {
     jest.clearAllMocks();
   });
 
+  /**
+   * Verifica che resetForm resetti correttamente il form e lo stato del modal.
+   */
   it('resetForm resetta il form e lo stato', () => {
     const modal = new TaskModal('1');
     form.dataset.taskId = '123';
@@ -60,6 +82,9 @@ describe('TaskModal', () => {
     expect(colorPreview.style.backgroundColor).toBe('rgb(255, 255, 255)');
   });
 
+  /**
+   * Verifica che close nasconda il modal e resetti il form.
+   */
   it('close nasconde il modal e resetta il form', () => {
     const modal = new TaskModal('1');
     modalDiv.style.display = 'block';
@@ -67,6 +92,9 @@ describe('TaskModal', () => {
     expect(modalDiv.style.display).toBe('none');
   });
 
+  /**
+   * Verifica che populateUserSelect popoli la select con i membri del team e selezioni quello corretto.
+   */
   it('populateUserSelect popola la select con i membri del team', () => {
     const modal = new TaskModal('1');
     modal.teamMembers = [
@@ -79,6 +107,9 @@ describe('TaskModal', () => {
     expect(select.children[2].selected).toBe(true);
   });
 
+  /**
+   * Verifica che loadTeamMembers restituisca i membri del team tramite fetch (mockata).
+   */
   it('loadTeamMembers restituisce i membri del team (mock fetch)', async () => {
     fetch.mockResolvedValue({ ok: true, json: async () => ({ members: [{ id: 1, nome: 'Mario', cognome: 'Rossi' }] }) });
     const modal = new TaskModal('1');
@@ -87,6 +118,9 @@ describe('TaskModal', () => {
     expect(members[0].nome).toBe('Mario');
   });
 
+  /**
+   * Verifica che loadTeamMembers gestisca errori e restituisca array vuoto in caso di errore.
+   */
   it('loadTeamMembers gestisce errori e restituisce array vuoto', async () => {
     fetch.mockRejectedValue(new Error('Errore')); // Simula errore fetch
     const modal = new TaskModal('1');
@@ -94,6 +128,9 @@ describe('TaskModal', () => {
     expect(members).toEqual([]);
   });
 
+  /**
+   * Verifica che getProject restituisca i dati del progetto tramite fetch (mockata).
+   */
   it('getProject restituisce i dati del progetto (mock fetch)', async () => {
     fetch.mockResolvedValue({ ok: true, json: async () => ({ id: 1, nome: 'Progetto' }) });
     const modal = new TaskModal('1');
@@ -101,12 +138,18 @@ describe('TaskModal', () => {
     expect(project.nome).toBe('Progetto');
   });
 
+  /**
+   * Verifica che getProject lanci un errore se la fetch fallisce.
+   */
   it('getProject lancia errore se fetch fallisce', async () => {
     fetch.mockResolvedValue({ ok: false });
     const modal = new TaskModal('1');
     await expect(modal.getProject(1)).rejects.toThrow('Errore nel recupero del progetto');
   });
 
+  /**
+   * Verifica che openForEdit (admin) popoli il form e la select correttamente.
+   */
   it('openForEdit (admin) popola il form e la select', async () => {
     fetch.mockResolvedValue({ ok: true, json: async () => ({ members: [{ id: 1, nome: 'Mario', cognome: 'Rossi' }] }) });
     const modal = new TaskModal('1');
@@ -122,6 +165,9 @@ describe('TaskModal', () => {
     expect(modalDiv.style.display).toBe('block');
   });
 
+  /**
+   * Verifica che openForEdit (user) selezioni assegnata_a_me se l'userId coincide con quello dell'utente corrente.
+   */
   it('openForEdit (user) seleziona assegnata_a_me se userId coincide', async () => {
     const modal = new TaskModal('1');
     const taskData = { id: 1, titolo: 'T', descrizione: 'D', peso: 2, priorita: 'alta', scadenza: '', colore: '', userId: 5 };

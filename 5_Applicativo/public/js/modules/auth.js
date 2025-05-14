@@ -7,9 +7,11 @@
  * - Gestione eventi UI relativi all'autenticazione
  * - Comunicazione con il server per operazioni di auth
  * 
- * Utilizzo:
+ * Esempio di utilizzo:
+ * ```js
  * const authManager = new AuthManager();
  * // Il manager si occuperà automaticamente di inizializzare gli eventi
+ * ```
  */
 
 export class AuthManager {

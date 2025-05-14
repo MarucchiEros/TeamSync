@@ -625,6 +625,11 @@ body {
         z-index: 1100;
         cursor: pointer;
     }
+
+    /* Nascondi avatar iniziali nella tabella Team in modalità responsive */
+    .table-container .owner-avatar {
+        display: none !important;
+    }
 }
 
 @media (min-width: 769px) {

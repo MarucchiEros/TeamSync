@@ -7,7 +7,16 @@ const bcrypt = require('bcrypt');
 const { sendAccountDeletionEmail } = require('../utils/emailService');
 const { validateUserData } = require('../utils/validator');
 
-// Funzione per verificare l'autenticazione
+/**
+ * Middleware di autenticazione
+ * Verifica che l'utente sia loggato per accedere alle API
+ *
+ * @middleware
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ * @param {Function} next - Next middleware
+ * @returns {Object} 401 se non autenticato
+ */
 const checkAuth = (req, res, next) => {
     if (!req.session || !req.session.user) {
         return res.status(401).json({ message: 'Utente non autenticato' });
@@ -15,7 +24,14 @@ const checkAuth = (req, res, next) => {
     next();
 };
 
-// GET /api/users - Ottieni tutti gli utenti
+/**
+ * Recupera tutti gli utenti
+ *
+ * @route GET /api/users
+ * @access Private
+ * @returns {Array} Lista utenti senza password
+ * @throws {Error} 500 se errore nel recupero
+ */
 router.get('/', checkAuth, async (req, res) => {
     try {
         const utenti = await Utente.findAll({
@@ -28,7 +44,14 @@ router.get('/', checkAuth, async (req, res) => {
     }
 });
 
-// GET /api/users/current - Ottieni l'utente corrente
+/**
+ * Recupera l'utente corrente
+ *
+ * @route GET /api/users/current
+ * @access Private
+ * @returns {Object} Utente corrente senza password
+ * @throws {Error} 404 se non trovato, 500 se errore
+ */
 router.get('/current', checkAuth, async (req, res) => {
     try {
         const userId = req.session.user.id;
@@ -47,7 +70,15 @@ router.get('/current', checkAuth, async (req, res) => {
     }
 });
 
-// GET /api/users/:id - Ottieni un singolo utente
+/**
+ * Recupera un singolo utente tramite ID
+ *
+ * @route GET /api/users/:id
+ * @access Private
+ * @param {string} id - ID dell'utente
+ * @returns {Object} Dettaglio utente senza password
+ * @throws {Error} 404 se non trovato, 500 se errore
+ */
 router.get('/:id', checkAuth, async (req, res) => {
     try {
         const { id } = req.params;
@@ -66,7 +97,15 @@ router.get('/:id', checkAuth, async (req, res) => {
     }
 });
 
-// GET /api/users/team/:teamId - Ottieni tutti gli utenti di un team specifico
+/**
+ * Recupera tutti gli utenti di un team specifico
+ *
+ * @route GET /api/users/team/:teamId
+ * @access Private
+ * @param {string} teamId - ID del team
+ * @returns {Array} Lista utenti del team
+ * @throws {Error} 404 se team non trovato, 500 se errore
+ */
 router.get('/team/:teamId', checkAuth, async (req, res) => {
     try {
         const { teamId } = req.params;
@@ -90,7 +129,19 @@ router.get('/team/:teamId', checkAuth, async (req, res) => {
     }
 });
 
-// POST /api/users - Crea un nuovo utente
+/**
+ * Crea un nuovo utente
+ *
+ * @route POST /api/users
+ * @access Private
+ * @body {string} nome - Nome dell'utente
+ * @body {string} cognome - Cognome dell'utente
+ * @body {string} email - Email dell'utente
+ * @body {string} password - Password dell'utente
+ * @body {string} ruolo - Ruolo dell'utente
+ * @returns {Object} Utente creato senza password
+ * @throws {Error} 400 se dati non validi o email già in uso, 500 se errore
+ */
 router.post('/', checkAuth, async (req, res) => {
     try {
         const { nome, cognome, email, password, ruolo } = req.body;
@@ -143,7 +194,20 @@ router.post('/', checkAuth, async (req, res) => {
     }
 });
 
-// PUT /api/users/:id - Aggiorna un utente esistente
+/**
+ * Aggiorna un utente esistente
+ *
+ * @route PUT /api/users/:id
+ * @access Private
+ * @param {string} id - ID dell'utente
+ * @body {string} [nome] - Nuovo nome
+ * @body {string} [cognome] - Nuovo cognome
+ * @body {string} [email] - Nuova email
+ * @body {string} [password] - Nuova password
+ * @body {string} [ruolo] - Nuovo ruolo
+ * @returns {Object} Utente aggiornato senza password
+ * @throws {Error} 404 se non trovato, 400 se email già in uso, 500 se errore
+ */
 router.put('/:id', checkAuth, async (req, res) => {
     try {
         const { id } = req.params;

@@ -1,5 +1,14 @@
+/**
+ * Seeder per la tabella 'team'.
+ *
+ * Inserisce team di esempio per popolare la base dati con gruppi di lavoro.
+ * Utile per testare funzionalità legate ai team.
+ *
+ * @module SeederTeams
+ */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    // Inserimento team di esempio
     return queryInterface.bulkInsert('team', [
       {
         nome: 'Team Sviluppo Frontend',
@@ -41,6 +50,7 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
+    // Rimozione di tutti i team inseriti dal seeder
     return queryInterface.bulkDelete('team', null, {});
   }
 }; 

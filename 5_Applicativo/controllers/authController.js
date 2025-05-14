@@ -56,6 +56,14 @@ const formatName = (name) => {
  */
 const register = async (req, res) => {
     try {
+        // Controllo che la checkbox dei termini sia selezionata
+        if (!req.body.terms) {
+            return res.status(400).json({
+                success: false,
+                message: 'Devi accettare i termini e le condizioni per registrarti.'
+            });
+        }
+
         const userData = {
             nome: req.body.nome,
             cognome: req.body.cognome,

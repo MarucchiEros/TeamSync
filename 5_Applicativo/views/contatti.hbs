@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamSync - Contatti</title>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+
+<body>
+    {{> headerHome activePage='contatti'}}
+    <main class="main-content">
+        <h1>Contattaci</h1>
+        <div class="profile-card">
+            {{#if success}}
+            <div class="profile-message success">{{success}}</div>
+            {{/if}}
+            {{#if error}}
+            <div class="profile-message error">{{error}}</div>
+            {{/if}}
+            <form action="/contatti" method="POST" class="profile-form">
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <div class="input-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" id="nome" name="nome" required placeholder="Il tuo nome" value="{{nome}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6z">
+                            </path>
+                            <path d="M22 6l-10 7L2 6"></path>
+                        </svg>
+                        <input type="email" id="email" name="email" required placeholder="La tua email"
+                            value="{{email}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="soggetto">Soggetto</label>
+                    <div class="input-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="5" width="18" height="14" rx="2" ry="2"></rect>
+                            <path d="M3 7l9 6 9-6"></path>
+                        </svg>
+                        <select id="soggetto" name="soggetto" required>
+                            <option value="">Seleziona un soggetto</option>
+                            <option value="Problemi di accesso" {{#if (eq soggetto 'Problemi di accesso'
+                                )}}selected{{/if}}>Problemi di accesso</option>
+                            <option value="Richiesta informazioni" {{#if (eq soggetto 'Richiesta informazioni'
+                                )}}selected{{/if}}>Richiesta informazioni</option>
+                            <option value="Suggerimenti" {{#if (eq soggetto 'Suggerimenti' )}}selected{{/if}}>
+                                Suggerimenti</option>
+                            <option value="Altro" {{#if (eq soggetto 'Altro' )}}selected{{/if}}>Altro</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="messaggio">Messaggio</label>
+                    <div class="input-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <textarea id="messaggio" name="messaggio" rows="5" required
+                            placeholder="Scrivi il tuo messaggio...">{{messaggio}}</textarea>
+                    </div>
+                </div>
+                <div class="form-actions profile-actions">
+                    <button type="reset" class="btn btn-secondary">Annulla</button>
+                    <button type="submit" class="submit-btn">Invia</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    {{> footer}}

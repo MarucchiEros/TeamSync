@@ -9,6 +9,12 @@
  * - Ricerca e filtro membri
  * - Validazione form
  * - Gestione stato UI e notifiche
+ *
+ * Esempio di utilizzo:
+ * ```js
+ * const teamManager = new TeamManager();
+ * teamManager.init();
+ * ```
  */
 
 import { NotificationManager } from './notifications.js';

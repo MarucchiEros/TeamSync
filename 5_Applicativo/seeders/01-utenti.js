@@ -1,10 +1,21 @@
 const bcrypt = require('bcrypt');
 
+/**
+ * Seeder per la tabella 'utente'.
+ *
+ * Inserisce utenti di esempio con password hashata tramite bcrypt.
+ * Utile per popolare la base dati con utenti di test.
+ *
+ * @module SeederUtenti
+ */
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    // Password di default per tutti gli utenti
     const password = 'Admin$00';
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Inserimento utenti di esempio
     return queryInterface.bulkInsert('utente', [
       {
         nome: 'Mario',
@@ -59,6 +70,7 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
+    // Rimozione di tutti gli utenti inseriti dal seeder
     return queryInterface.bulkDelete('utente', null, {});
   }
 }; 

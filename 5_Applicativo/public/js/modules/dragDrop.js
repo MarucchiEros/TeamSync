@@ -7,10 +7,13 @@
  * - Feedback visivo durante il trascinamento
  * - Aggiornamento stato task dopo lo spostamento
  * 
- * Utilizzo:
- * const dragDrop = new DragDropManager((taskId, newState) => {
- *     // Logica di aggiornamento stato
+ * Esempio di utilizzo:
+ * ```js
+ * const dragDrop = new DragDropManager(async (taskId, newState) => {
+ *   // Logica di aggiornamento stato task
+ *   await taskApi.moveTask(taskId, newState);
  * });
+ * ```
  */
 
 export class DragDropManager {

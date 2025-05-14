@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="icon" type="image/png" href="/assets/img/favicon.png">
     <link rel="stylesheet" href="/css/admin.css">
 </head>
+
 <body>
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
@@ -20,7 +22,7 @@
                 <span>Dashboard Admin</span>
             </a>
         </nav>
-        
+
         <div class="sidebar-footer">
             <div class="user-profile">
                 <div class="user-avatar">{{user.nome.[0]}}{{user.cognome.[0]}}</div>
@@ -163,8 +165,10 @@
                                 </td>
                                 <td data-label="Azioni">
                                     <div class="action-buttons">
-                                        <button class="btn-icon" title="Modifica" data-id="{{this.id}}"><i>✏️</i></button>
-                                        <button class="btn-icon" title="Elimina" data-id="{{this.id}}"><i>🗑️</i></button>
+                                        <button class="btn-icon" title="Modifica"
+                                            data-id="{{this.id}}"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Elimina"
+                                            data-id="{{this.id}}"><i>🗑️</i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -204,13 +208,15 @@
                             <div class="form-group">
                                 <label>Membri del Team *</label>
                                 <div class="members-search">
-                                    <input type="text" id="team-members-search" placeholder="Cerca utenti..." class="search-input">
+                                    <input type="text" id="team-members-search" placeholder="Cerca utenti..."
+                                        class="search-input">
                                 </div>
                                 <div class="members-selection">
                                     <div class="no-results">Nessun utente trovato</div>
                                     {{#each utenti}}
                                     <div class="member-option">
-                                        <input type="checkbox" id="member-{{this.id}}" name="membri" value="{{this.id}}">
+                                        <input type="checkbox" id="member-{{this.id}}" name="membri"
+                                            value="{{this.id}}">
                                         <label for="member-{{this.id}}">
                                             <div class="owner-avatar">{{this.nome.[0]}}{{this.cognome.[0]}}</div>
                                             <span>{{this.nome}} {{this.cognome}}</span>
@@ -342,9 +348,12 @@
                                 <td>{{this.scadenza}}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-icon" title="Visualizza Dashboard" data-id="{{this.id}}"><i>👁️</i></button>
-                                        <button class="btn-icon" title="Modifica" data-id="{{this.id}}"><i>✏️</i></button>
-                                        <button class="btn-icon" title="Elimina" data-id="{{this.id}}"><i>🗑️</i></button>
+                                        <button class="btn-icon" title="Visualizza Dashboard"
+                                            data-id="{{this.id}}"><i>👁️</i></button>
+                                        <button class="btn-icon" title="Modifica"
+                                            data-id="{{this.id}}"><i>✏️</i></button>
+                                        <button class="btn-icon" title="Elimina"
+                                            data-id="{{this.id}}"><i>🗑️</i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -356,4 +365,4 @@
         </div>
     </main>
     <script type="module" src="/js/admin.js"></script>
-{{> footer}}
+    {{> footer}}

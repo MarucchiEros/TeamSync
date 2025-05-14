@@ -1,3 +1,11 @@
+/**
+ * Seeder per la tabella 'team_utente'.
+ *
+ * Inserisce associazioni tra utenti e team per simulare la composizione dei gruppi di lavoro.
+ * Utile per testare funzionalità di appartenenza ai team.
+ *
+ * @module SeederTeamUtenti
+ */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('team_utente', [

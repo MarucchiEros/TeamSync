@@ -1,5 +1,14 @@
+/**
+ * Seeder per la tabella 'progetto'.
+ *
+ * Inserisce progetti di esempio associati ai vari team per popolare la base dati.
+ * Utile per testare funzionalità di gestione progetti e assegnazione ai team.
+ *
+ * @module SeederProgetti
+ */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    // Inserimento progetti di esempio
     return queryInterface.bulkInsert('progetto', [
       {
         nome: 'App E-commerce Mobile',
@@ -95,6 +104,7 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
+    // Rimozione di tutti i progetti inseriti dal seeder
     return queryInterface.bulkDelete('progetto', null, {});
   }
 }; 

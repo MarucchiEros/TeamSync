@@ -10,6 +10,12 @@
  * - Ricerca e filtro progetti
  * - Gestione team e assegnazioni
  * - Validazione dati
+ *
+ * Esempio di utilizzo:
+ * ```js
+ * const projectManager = new ProjectManager();
+ * projectManager.init();
+ * ```
  */
 
 export class ProjectManager {

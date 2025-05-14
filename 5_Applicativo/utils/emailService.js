@@ -197,9 +197,36 @@ const sendResetCodeEmail = (userEmail, userName, code) => {
     });
 };
 
+// Funzione per inviare una mail dal form contatti
+const sendContactEmail = async (nome, email, soggetto, messaggio) => {
+    const mailOptions = {
+        from: `"TeamSync - Contatto" <${process.env.EMAIL_USER}>`,
+        to: 'teamsyncbot@gmail.com',
+        subject: `[Contatto] ${soggetto}`,
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                <h2>Nuovo messaggio dal form contatti TeamSync</h2>
+                <p><strong>Nome:</strong> ${nome}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Soggetto:</strong> ${soggetto}</p>
+                <p><strong>Messaggio:</strong></p>
+                <div style="background: #f8fafc; padding: 12px 16px; border-radius: 8px;">${messaggio.replace(/\n/g, '<br>')}</div>
+            </div>
+        `
+    };
+    try {
+        await transporter.sendMail(mailOptions);
+        return true;
+    } catch (err) {
+        console.error("Errore nell'invio dell'email di contatto:", err);
+        return false;
+    }
+};
+
 module.exports = { 
     sendConfirmationEmail,
     sendAccountDeletionEmail,
     sendProjectAssignmentEmail,
-    sendResetCodeEmail
+    sendResetCodeEmail,
+    sendContactEmail
 };

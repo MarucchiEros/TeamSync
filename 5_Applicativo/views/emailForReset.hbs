@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html lang="it">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeamSync - Autenticazione</title>
-    <link rel="icon" type="image/png" href="/assets/img/favicon.png">
-    <link rel="stylesheet" href="/css/auth.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-</head>
+<title>TeamSync - Email per reset password</title>
+{{> headerAuth}}
 
 <body>
     <div class="container">
@@ -18,7 +9,8 @@
             </div>
 
             <div class="forms-container">
-                <p style="text-align:center; color: var(--text-secondary); margin-bottom: 24px; font-size: 15px;">Inserisci la tua email e riceverai un codice per reimpostare la password.</p>
+                <p style="text-align:center; color: var(--text-secondary); margin-bottom: 24px; font-size: 15px;">
+                    Inserisci la tua email e riceverai un codice per reimpostare la password.</p>
                 <form class="form active" id="reset-form">
                     <div id="reset-message"></div>
                     <div class="form-group">
@@ -31,7 +23,8 @@
                                 </path>
                                 <path d="M22 6l-10 7L2 6"></path>
                             </svg>
-                            <input type="email" id="reset-email" name="email" placeholder="Inserisci la tua email" required autocomplete="email">
+                            <input type="email" id="reset-email" name="email" placeholder="Inserisci la tua email"
+                                required autocomplete="email">
                         </div>
                     </div>
 
@@ -43,6 +36,4 @@
             </div>
         </div>
     </div>
-</body>
-<script src="/js/auth.js"></script>
-</html>
+    {{> footer}}

@@ -342,13 +342,21 @@ const moveTask = async (req, res) => {
         // Aggiornamento stato
         await task.update({ status });
 
+        // Recupera la task aggiornata con la relazione Utente
+        const updatedTask = await TaskJson.findByPk(id, {
+            include: [{
+                model: Utente,
+                attributes: ['id', 'nome', 'cognome']
+            }]
+        });
+
         // Emetti l'evento di aggiornamento a tutti i client nella room del progetto
-        req.io.to(`project_${task.projectId}`).emit('taskUpdated', task);
+        req.io.to(`project_${task.projectId}`).emit('taskUpdated', updatedTask);
 
         res.json({
             success: true,
             message: 'Task spostata con successo',
-            task
+            task: updatedTask
         });
     } catch (error) {
         logger.error('Errore durante lo spostamento della task:', error);

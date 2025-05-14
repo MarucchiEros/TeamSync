@@ -1,3 +1,4 @@
+<title>TeamSync - Membri del team</title>
 {{> headerDashboard}}
 
 <div class="table-container">
@@ -17,32 +18,32 @@
         </thead>
         <tbody>
             {{#if utenti.length}}
-                {{#each utenti}}
-                <tr class="user-row" data-role="{{this.ruolo}}">
-                    <td>
-                        <div class="user-info">
-                            <div class="owner-avatar">{{this.nome.[0]}}{{this.cognome.[0]}}</div>
-                            <span class="user-fullname">{{this.nome}} {{this.cognome}}</span>
-                        </div>
-                    </td>
-                    <td class="user-email">{{this.email}}</td>
-                    <td>
-                        {{#if (eq this.ruolo 'admin')}}
-                        <span class="badge badge-admin">Admin</span>
-                        {{else}}
-                        <span class="badge badge-user">User</span>
-                        {{/if}}
-                    </td>
-                </tr>
-                {{/each}}
+            {{#each utenti}}
+            <tr class="user-row" data-role="{{this.ruolo}}">
+                <td>
+                    <div class="user-info">
+                        <div class="owner-avatar">{{this.nome.[0]}}{{this.cognome.[0]}}</div>
+                        <span class="user-fullname">{{this.nome}} {{this.cognome}}</span>
+                    </div>
+                </td>
+                <td class="user-email">{{this.email}}</td>
+                <td>
+                    {{#if (eq this.ruolo 'admin')}}
+                    <span class="badge badge-admin">Admin</span>
+                    {{else}}
+                    <span class="badge badge-user">User</span>
+                    {{/if}}
+                </td>
+            </tr>
+            {{/each}}
             {{else}}
-                <tr>
-                    <td colspan="3" class="text-center">Nessun membro nel team</td>
-                </tr>
+            <tr>
+                <td colspan="3" class="text-center">Nessun membro nel team</td>
+            </tr>
             {{/if}}
         </tbody>
     </table>
     {{/if}}
 </div>
-{{> footer}}
 <script type="module" src="/js/auth.js"></script>
+{{> footer}}

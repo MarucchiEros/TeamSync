@@ -1,7 +1,20 @@
+/**
+ * Test per il controller di autenticazione (`authController`)
+ * 
+ * Comprende test per:
+ * - Registrazione (`register`)
+ * - Login (`login`)
+ * - Logout (`logout`)
+ * 
+ * Vengono utilizzati mock per i moduli esterni (modello Utente, bcrypt, validator, emailService)
+ * e viene soppressa temporaneamente la stampa degli errori sulla console.
+ */
+
 const authController = require('../controllers/authController');
 const Utente = require('../models/Utente');
 const messages = require('../config/messages');
 
+// Soppressione temporanea degli errori di console per pulizia output test
 let originalConsoleError;
 beforeAll(() => {
   originalConsoleError = console.error;
@@ -11,6 +24,7 @@ afterAll(() => {
   console.error = originalConsoleError;
 });
 
+// Mock dei moduli utilizzati da authController
 jest.mock('../models/Utente');
 jest.mock('../utils/validator', () => ({
   validateUserData: jest.fn()
@@ -23,6 +37,9 @@ jest.mock('../utils/emailService', () => ({
   sendConfirmationEmail: jest.fn()
 }));
 
+/**
+ * Test per la funzione di registrazione `authController.register`
+ */
 describe('authController.register', () => {
   let req, res;
 
@@ -32,7 +49,8 @@ describe('authController.register', () => {
         nome: 'Mario',
         cognome: 'Rossi',
         email: 'mario@rossi.it',
-        password: 'password123'
+        password: 'password123',
+        terms: true
       },
       session: {}
     };
@@ -44,6 +62,9 @@ describe('authController.register', () => {
     Utente.create.mockReset();
   });
 
+  /**
+   * Verifica la registrazione con dati validi
+   */
   it('registra un nuovo utente con dati validi', async () => {
     require('../utils/validator').validateUserData.mockReturnValue(null);
     Utente.findOne.mockResolvedValue(null);
@@ -59,6 +80,9 @@ describe('authController.register', () => {
     }));
   });
 
+  /**
+   * Gestione errore di validazione input
+   */
   it('risponde con errore se la validazione fallisce', async () => {
     require('../utils/validator').validateUserData.mockReturnValue({ email: 'Email non valida' });
 
@@ -72,6 +96,9 @@ describe('authController.register', () => {
     }));
   });
 
+  /**
+   * Verifica il controllo email duplicata
+   */
   it('risponde con errore se l\'email è già registrata', async () => {
     require('../utils/validator').validateUserData.mockReturnValue(null);
     Utente.findOne.mockResolvedValue({ id: 2 });
@@ -86,6 +113,9 @@ describe('authController.register', () => {
   });
 });
 
+/**
+ * Test per la funzione di login `authController.login`
+ */
 describe('authController.login', () => {
   let req, res;
 
@@ -104,6 +134,9 @@ describe('authController.login', () => {
     Utente.findOne.mockReset();
   });
 
+  /**
+   * Login con credenziali corrette
+   */
   it('fa il login con credenziali valide', async () => {
     require('../utils/validator').validateUserData.mockReturnValue(null);
     Utente.findOne.mockResolvedValue({
@@ -124,6 +157,9 @@ describe('authController.login', () => {
     }));
   });
 
+  /**
+   * Login fallito per errore di validazione
+   */
   it('risponde con errore se la validazione fallisce', async () => {
     require('../utils/validator').validateUserData.mockReturnValue({ email: 'Email non valida' });
 
@@ -137,6 +173,9 @@ describe('authController.login', () => {
     }));
   });
 
+  /**
+   * Login fallito: utente non trovato
+   */
   it('risponde con errore se utente non trovato', async () => {
     require('../utils/validator').validateUserData.mockReturnValue(null);
     Utente.findOne.mockResolvedValue(null);
@@ -150,6 +189,9 @@ describe('authController.login', () => {
     }));
   });
 
+  /**
+   * Login fallito: password errata
+   */
   it('risponde con errore se la password è errata', async () => {
     require('../utils/validator').validateUserData.mockReturnValue(null);
     Utente.findOne.mockResolvedValue({
@@ -171,6 +213,9 @@ describe('authController.login', () => {
     }));
   });
 
+  /**
+   * Gestione eccezione generica
+   */
   it('risponde con errore 500 in caso di eccezione', async () => {
     require('../utils/validator').validateUserData.mockImplementation(() => { throw new Error('Errore'); });
 
@@ -184,6 +229,9 @@ describe('authController.login', () => {
   });
 });
 
+/**
+ * Test per la funzione di logout `authController.logout`
+ */
 describe('authController.logout', () => {
   let req, res;
 
@@ -201,6 +249,9 @@ describe('authController.logout', () => {
     };
   });
 
+  /**
+   * Logout corretto
+   */
   it('fa il logout con successo', () => {
     req.session.destroy.mockImplementation(cb => cb(null));
 
@@ -209,6 +260,9 @@ describe('authController.logout', () => {
     expect(res.redirect).toHaveBeenCalledWith('/login');
   });
 
+  /**
+   * Errore durante la distruzione della sessione
+   */
   it('risponde con errore se destroy fallisce', () => {
     req.session.destroy.mockImplementation(cb => cb(new Error('Errore')));
 
@@ -218,6 +272,9 @@ describe('authController.logout', () => {
     expect(res.render).toHaveBeenCalledWith('auth', { activeTab: 'login', error: 'Errore durante il logout' });
   });
 
+  /**
+   * Eccezione generica nel logout
+   */
   it('risponde con errore 500 in caso di eccezione', () => {
     req.session.destroy = null; // Forza un errore
 
@@ -226,4 +283,4 @@ describe('authController.logout', () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.render).toHaveBeenCalledWith('auth', { activeTab: 'login', error: 'Errore durante il logout' });
   });
-}); 
+});

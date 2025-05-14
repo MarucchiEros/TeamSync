@@ -1,3 +1,5 @@
+// File di configurazione Babel per la transpilation ES6+ nei test Jest
+// Utilizza il preset '@babel/preset-env' per garantire compatibilità con le versioni moderne di JavaScript
 {
   "presets": ["@babel/preset-env"]
 } 

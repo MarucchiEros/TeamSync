@@ -69,9 +69,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageDiv.textContent = 'Le password non coincidono.';
                 return;
             }
-            if (password.length < 8) {
+            // Validazione avanzata come in registrazione
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(password)) {
                 messageDiv.className = 'message error';
-                messageDiv.textContent = 'La password deve essere lunga almeno 8 caratteri.';
+                messageDiv.textContent = 'La password deve essere di almeno 8 caratteri, contenere almeno una lettera maiuscola, una minuscola, un numero e un carattere speciale.';
                 return;
             }
             try {

@@ -26,6 +26,7 @@ const TaskJson = require('../models/TaskJson');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 const { validateUserData, validateTeamData } = require('../utils/validator');
+const { sendContactEmail } = require('../utils/emailService');
 
 /**
  * Middleware di autenticazione
@@ -671,6 +672,63 @@ router.post('/profilo/update', isAuthenticated, async (req, res) => {
         res.render('profile', { user: req.session.user, success: 'Profilo aggiornato con successo!', activePage: 'profilo' });
     } catch (error) {
         res.status(500).render('profile', { user: req.session.user, error: 'Errore durante l\'aggiornamento del profilo', activePage: 'profilo' });
+    }
+});
+
+// Rotta pubblica per Termini e Condizioni
+router.get('/terms', (req, res) => {
+    res.render('terms');
+});
+
+// Rotta pubblica per Informativa sulla Privacy
+router.get('/privacy', (req, res) => {
+    res.render('privacy');
+});
+
+// Rotta per la pagina Contatti
+router.get('/contatti', isAuthenticated, (req, res) => {
+    res.render('contatti', { user: req.session.user, activePage: 'contatti' });
+});
+
+// Gestione invio form contatti
+router.post('/contatti', isAuthenticated, async (req, res) => {
+    const { nome, email, soggetto, messaggio } = req.body;
+    let error = null;
+    // Validazione base
+    if (!nome || !email || !soggetto || !messaggio) {
+        error = 'Tutti i campi sono obbligatori.';
+    } else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        error = 'Email non valida.';
+    }
+    if (error) {
+        return res.render('contatti', {
+            user: req.session.user,
+            activePage: 'contatti',
+            error,
+            nome,
+            email,
+            soggetto,
+            messaggio
+        });
+    }
+    // Invio email
+    const mailSent = await sendContactEmail(nome, email, soggetto, messaggio);
+    if (mailSent) {
+        res.render('contatti', {
+            user: req.session.user,
+            activePage: 'contatti',
+            success: 'Messaggio inviato con successo!'
+        });
+    } else {
+        res.render('contatti', {
+            user: req.session.user,
+            activePage: 'contatti',
+            error: 'Errore nell\'invio del messaggio. Riprova più tardi.',
+            nome,
+            email,
+            soggetto,
+            messaggio
+        });
     }
 });
 

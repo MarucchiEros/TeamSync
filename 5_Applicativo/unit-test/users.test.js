@@ -1,3 +1,14 @@
+/**
+ * Test per la gestione degli utenti tramite UserManager.
+ *
+ * Questa suite verifica il comportamento delle principali funzionalità di UserManager:
+ * apertura e chiusura del modale, creazione, modifica, eliminazione e gestione degli errori.
+ * Vengono simulati diversi scenari di interazione con il DOM e con le API.
+ *
+ * Utilizza Jest come framework di testing e mocking delle funzioni globali e fetch.
+ *
+ * @module UserManagerTest
+ */
 import { UserManager } from '../public/js/modules/users';
 
 global.fetch = jest.fn();
@@ -13,6 +24,10 @@ afterAll(() => {
   console.error = originalConsoleError;
 });
 
+/**
+ * Suite di test per UserManager
+ * Verifica la gestione del modale utente, la creazione, modifica, eliminazione e la gestione degli errori.
+ */
 describe('UserManager', () => {
   let manager, modal, form, newBtn, closeBtns, nameInput, surnameInput, emailInput, roleInput, passwordInput, submitBtn;
   beforeEach(() => {
@@ -47,6 +62,9 @@ describe('UserManager', () => {
     jest.clearAllMocks();
   });
 
+  /**
+   * Verifica l'apertura del modale per la creazione di un nuovo utente.
+   */
   it('apre il modale per nuovo utente', () => {
     newBtn.click();
     expect(modal.style.display).toBe('block');
@@ -55,6 +73,9 @@ describe('UserManager', () => {
     expect(passwordInput.parentElement.style.display).toBe('block');
   });
 
+  /**
+   * Verifica la chiusura del modale senza modifiche.
+   */
   it('chiude il modale senza modifiche', () => {
     manager.formHasChanges = false;
     manager.closeModal();
@@ -62,6 +83,9 @@ describe('UserManager', () => {
     expect(manager.currentUserId).toBeNull();
   });
 
+  /**
+   * Verifica la chiusura del modale con modifiche e conferma.
+   */
   it('chiude il modale con modifiche e conferma', () => {
     manager.formHasChanges = true;
     global.confirm = jest.fn(() => true);
@@ -70,6 +94,9 @@ describe('UserManager', () => {
     expect(manager.currentUserId).toBeNull();
   });
 
+  /**
+   * Gestisce la submit del form per la creazione di un nuovo utente.
+   */
   it('gestisce la submit del form per nuovo utente', async () => {
     nameInput.value = 'Mario';
     surnameInput.value = 'Rossi';
@@ -82,6 +109,9 @@ describe('UserManager', () => {
     await Promise.resolve();
   });
 
+  /**
+   * Gestisce la submit del form per la modifica di un utente esistente.
+   */
   it('gestisce la submit del form per modifica utente', async () => {
     manager.currentUserId = '1';
     nameInput.value = 'Mario';
@@ -94,6 +124,9 @@ describe('UserManager', () => {
     await Promise.resolve();
   });
 
+  /**
+   * Gestisce errori durante la submit del form.
+   */
   it('gestisce errore nella submit del form', async () => {
     global.fetch.mockRejectedValue(new Error('Errore'));
     nameInput.value = 'Mario';
@@ -107,6 +140,9 @@ describe('UserManager', () => {
     expect(global.showMessage).toHaveBeenCalled();
   });
 
+  /**
+   * Gestisce la modifica di un utente tramite i pulsanti di modifica (initEditButtons).
+   */
   it('gestisce la modifica di un utente (initEditButtons)', async () => {
     global.fetch.mockResolvedValue({ ok: true, json: async () => ({ nome: 'Mario', cognome: 'Rossi', email: 'mario@rossi.it', ruolo: 'admin' }) });
     const editBtn = document.querySelector('.btn-icon[title="Modifica"]');
@@ -119,6 +155,9 @@ describe('UserManager', () => {
     expect(modal.style.display).toBe('block');
   });
 
+  /**
+   * Gestisce la cancellazione di un utente tramite i pulsanti di eliminazione (initDeleteButtons).
+   */
   it('gestisce la cancellazione di un utente (initDeleteButtons)', async () => {
     global.confirm = jest.fn(() => true);
     global.fetch.mockResolvedValue({ ok: true, json: async () => ({}) });
@@ -129,6 +168,9 @@ describe('UserManager', () => {
     expect(userRow.style.opacity).toBe('0');
   });
 
+  /**
+   * Gestisce errori durante la cancellazione di un utente.
+   */
   it('gestisce errore nella cancellazione utente', async () => {
     global.confirm = jest.fn(() => true);
     global.fetch.mockRejectedValue(new Error('Errore'));

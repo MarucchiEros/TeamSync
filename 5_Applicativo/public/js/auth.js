@@ -30,7 +30,7 @@ const resetForm = document.getElementById('reset-form');
 
 /**
  * Mostra un messaggio di feedback all'utente
- * Il messaggio viene automaticamente rimosso dopo 3 secondi
+ * Il messaggio viene automaticamente rimosso dopo 6 secondi
  * 
  * Stili dei messaggi:
  * - Successo: sfondo verde
@@ -62,10 +62,10 @@ function showMessage(message, isSuccess, form) {
     // Inserisci il messaggio dopo il form
     form.appendChild(messageDiv);
 
-    // Rimuovi il messaggio dopo 3 secondi
+    // Rimuovi il messaggio dopo 6 secondi
     setTimeout(() => {
         messageDiv.remove();
-    }, 3000);
+    }, 6000);
 }
 
 /**
@@ -195,8 +195,17 @@ if (registerForm) {
             nome: document.getElementById('nome').value,
             cognome: document.getElementById('cognome').value,
             email: document.getElementById('reg-email').value,
-            password: document.getElementById('reg-password').value
+            password: document.getElementById('reg-password').value,
+            terms: document.getElementById('terms').checked
         };
+        // Validazione password lato frontend
+        const password = formData.password;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            showMessage('La password deve essere di almeno 8 caratteri, contenere almeno una lettera maiuscola, una minuscola, un numero e un carattere speciale.', false, registerForm);
+            document.getElementById('reg-password').focus();
+            return;
+        }
         try {
             const response = await fetch('/register', {
                 method: 'POST',
@@ -381,6 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
             overlays.forEach(ov => ov.classList.remove('active'));
         });
     });
+
+    // Attiva la tab di registrazione se presente il parametro tab=register
+    if (window.location.search.includes('tab=register')) {
+        showRegisterForm();
+    }
 });
 
 
