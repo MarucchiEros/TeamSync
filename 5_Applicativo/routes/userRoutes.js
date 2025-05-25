@@ -213,6 +213,18 @@ router.put('/:id', checkAuth, async (req, res) => {
         const { id } = req.params;
         const { nome, cognome, email, password, ruolo } = req.body;
 
+        // BLOCCO: un admin non può cambiarsi da solo il ruolo
+        if (
+            req.session.user &&
+            req.session.user.ruolo === 'admin' &&
+            req.session.user.id === parseInt(id) &&
+            ruolo !== 'admin'
+        ) {
+            return res.status(403).json({
+                message: 'Un amministratore non può cambiare il proprio ruolo.'
+            });
+        }
+
         const utente = await Utente.findByPk(id);
         if (!utente) {
             return res.status(404).json({ message: 'Utente non trovato' });
@@ -272,7 +284,7 @@ router.delete('/:id', checkAuth, async (req, res) => {
         if (req.session.user.ruolo === 'admin' && req.session.user.id === parseInt(id)) {
             return res.status(403).json({ 
                 success: false,
-                message: 'Un amministratore non può eliminare il proprio account' 
+                message: 'Un amministratore non può eliminare un altro amministratore' 
             });
         }
 

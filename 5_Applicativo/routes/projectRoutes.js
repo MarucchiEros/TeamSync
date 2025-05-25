@@ -26,6 +26,7 @@ const Utente = require('../models/Utente');
 const { sendProjectAssignmentEmail } = require('../utils/emailService');
 const { sequelize } = require('../config/database');
 const { validateProjectData } = require('../utils/validator');
+const TaskJson = require('../models/TaskJson');
 
 /**
  * Middleware di autenticazione
@@ -492,6 +493,9 @@ router.delete('/:id', isAuthenticated, async (req, res) => {
             });
         }
 
+        // Elimina tutte le task collegate a questo progetto
+        await TaskJson.destroy({ where: { projectId: progetto.id } });
+        // Ora elimina il progetto
         await progetto.destroy();
 
         res.status(200).json({

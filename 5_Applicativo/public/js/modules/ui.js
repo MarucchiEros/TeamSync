@@ -122,4 +122,50 @@ export function initResetPasswordToggles() {
         document.getElementById('togglePasswordConfirm'),
         document.getElementById('eyeIconConfirm')
     );
+}
+
+/**
+ * Abilita l'ordinamento per tutte le tabelle HTML passate come selettore o elemento
+ * @param {string|NodeList|HTMLElement[]} selector - Selettore CSS, NodeList o array di tabelle
+ */
+export function enableTableSort(selector = '.data-table') {
+    let tables = [];
+    if (typeof selector === 'string') {
+        tables = document.querySelectorAll(selector);
+    } else if (selector instanceof NodeList || Array.isArray(selector)) {
+        tables = selector;
+    } else if (selector instanceof HTMLElement) {
+        tables = [selector];
+    }
+    tables.forEach(table => {
+        const ths = table.querySelectorAll('thead th');
+        ths.forEach((th, colIdx) => {
+            th.style.cursor = 'pointer';
+            th.addEventListener('click', function() {
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                const isAsc = th.classList.contains('sort-asc');
+                // Rimuovi classi sort da tutti gli header
+                ths.forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                th.classList.add(isAsc ? 'sort-desc' : 'sort-asc');
+                // Ordina le righe
+                rows.sort((a, b) => {
+                    let aText = a.children[colIdx]?.innerText.trim() || '';
+                    let bText = b.children[colIdx]?.innerText.trim() || '';
+                    // Prova a convertire in numero
+                    const aNum = parseFloat(aText.replace(',', '.'));
+                    const bNum = parseFloat(bText.replace(',', '.'));
+                    if (!isNaN(aNum) && !isNaN(bNum)) {
+                        aText = aNum;
+                        bText = bNum;
+                    }
+                    if (aText < bText) return isAsc ? 1 : -1;
+                    if (aText > bText) return isAsc ? -1 : 1;
+                    return 0;
+                });
+                // Aggiorna il DOM
+                rows.forEach(row => tbody.appendChild(row));
+            });
+        });
+    });
 } 

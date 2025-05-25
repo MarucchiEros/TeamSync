@@ -1,22 +1,22 @@
 {{> headerHome}}
 <!-- Main Content -->
 <main class="main-content">
-    <header class="header">
-        <h1>I Miei Progetti</h1>
-    </header>
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-icon">📊</div>
-            <div class="stat-content">
-                <div class="stat-value">{{progetti.length}}</div>
-                <div class="stat-label">Progetti Attivi</div>
+    <div class="profile-card">
+        <h1 class="profile-title">I Miei Progetti</h1>
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <div class="stat-value">{{progetti.length}}</div>
+                    <div class="stat-label">Progetti Assegnati</div>
+                </div>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">⏱️</div>
-            <div class="stat-content">
-                <div class="stat-value">{{progetti_in_scadenza}}</div>
-                <div class="stat-label">In Scadenza</div>
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-content">
+                    <div class="stat-value">{{progetti_in_scadenza}}</div>
+                    <div class="stat-label">In Scadenza</div>
+                </div>
             </div>
         </div>
     </div>
@@ -50,15 +50,14 @@
                 <tbody>
                     {{#each progetti}}
                     <tr class="project-row" data-id="{{this.id}}">
-                        <td class="project-name">{{this.nome}}</td>
+                        <td class="project-name" style="font-weight:700;">{{this.nome}}</td>
                         <td>{{this.team}}</td>
                         <td><span
                                 class="status-badge {{#if (eq this.stato 'completato')}}completed{{else}}active{{/if}}">{{this.stato}}</span>
                         </td>
                         <td>{{this.scadenza}}</td>
                         <td class="actions">
-                            <button class="action-btn view" title="Visualizza" data-id="{{this.id}}"><span
-                                    class="icon">👁️</span></button>
+                            <button class="btn btn-secondary btn-visualizza-progetto" data-id="{{this.id}}">Visualizza</button>
                         </td>
                     </tr>
                     {{/each}}
@@ -82,6 +81,7 @@
 <script type="module">
     import { AuthManager } from '/js/modules/auth.js';
     import { SearchManager } from '/js/modules/search.js';
+    import { enableTableSort } from '/js/modules/ui.js';
     document.addEventListener('DOMContentLoaded', () => {
         // Inizializza i moduli
         new AuthManager();
@@ -93,6 +93,14 @@
                 window.location.href = `/dashboard/${projectId}`;
             });
         });
+        document.querySelectorAll('.btn-visualizza-progetto').forEach(button => {
+            button.addEventListener('click', () => {
+                const projectId = button.getAttribute('data-id');
+                window.location.href = `/dashboard/${projectId}`;
+            });
+        });
+        // Abilita il sort sulla tabella progetti
+        enableTableSort('.projects-table');
     });
 </script>
 {{> footer}}

@@ -1,11 +1,35 @@
 {{> headerDashboard}}
 
-<div class="dashboard-header">
-    <div class="project-info">
-        <h1>{{progetto.nome}}</h1>
+<div class="project-header-card card">
+    <div class="project-header-title-row">
+        <h1 class="profile-title">{{progetto.nome}}</h1>
         <span class="project-status {{#if (eq progetto.stato 'completato')}}completed{{else}}active{{/if}}">
-            {{progetto.stato}}
+            {{#if (eq progetto.stato 'completato')}}Completato{{else}}Attivo{{/if}}
         </span>
+    </div>
+    <div class="project-header-top">
+        <div class="project-info">
+            <!-- Il titolo e lo stato sono ora sopra -->
+        </div>
+    </div>
+    <div class="project-header-filters">
+        <select class="filter-select" id="filter-priority">
+            <option value="">Filtra per priorità</option>
+            <option value="alta">Alta</option>
+            <option value="media">Media</option>
+            <option value="bassa">Bassa</option>
+        </select>
+        <select class="filter-select" id="filter-member">
+            <option value="">Filtra per assegnatario</option>
+            <option value="me">I miei task</option>
+            <option value="unassigned">Non assegnati</option>
+            {{#each progetto.membri}}
+                <option value="{{this.id}}">{{this.nome}}</option>
+            {{/each}}
+        </select>
+        <button id="add-task" class="btn btn-primary add-task btn-block" type="button" style="margin-top: 18px;">
+            + Aggiungi Task
+        </button>
     </div>
 </div>
 
@@ -43,6 +67,7 @@
                 <label for="scadenza">Scadenza</label>
                 <input type="date" id="scadenza" name="scadenza">
             </div>
+            <br>
             <div class="form-group">
                 <label>Assegnazione</label>
                 {{#if (eq user.ruolo 'admin')}}
@@ -55,14 +80,15 @@
                 {{else}}
                 <div class="checkbox-group">
                     <input type="checkbox" id="assegnata_a_me" name="assegnata_a_me">
-                    <label for="assegnata_a_me">Assegna a me stesso</label>
+                    <p for="assegnata_a_me">Assegna a me stesso</p>
                 </div>
                 {{/if}}
             </div>
             <div class="form-group">
                 <label for="colore">Colore</label>
                 <div class="color-picker-container">
-                    <input type="color" id="colore" name="colore" value="#FFFFFF">
+                    <input type="color" id="colore" name="colore" value="#FFFFFF"><br>
+                    <p for="colore">Preview</p>
                     <span class="color-preview"></span>
                 </div>
             </div>
@@ -77,23 +103,6 @@
     </div>
 </div>
 
-<div class="actions">
-    <button class="add-task" id="add-task" aria-label="Aggiungi task">Aggiungi Task</button>
-    <div class="filters">
-        <select class="filter-select">
-            <option value="">Filtra per priorità</option>
-            <option value="alta">Alta</option>
-            <option value="media">Media</option>
-            <option value="bassa">Bassa</option>
-        </select>
-        <select class="filter-select">
-            <option value="">Filtra per assegnatario</option>
-            <option value="me">I miei task</option>
-            <option value="unassigned">Non assegnati</option>
-        </select>
-    </div>
-</div>
-
 <div class="kanban-board">
     <!-- Da Fare Column -->
     <div class="kanban-column">
@@ -102,7 +111,6 @@
                 <span>Da Fare</span>
                 <span class="task-count">0</span>
             </div>
-            <button class="add-task" aria-label="Aggiungi task">+</button>
         </div>
         <div class="task-list">
             <!-- Le task verranno inserite dinamicamente qui -->

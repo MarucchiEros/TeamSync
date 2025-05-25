@@ -54,6 +54,8 @@ describe('ProjectManager', () => {
       <button class="btn-icon" title="Elimina" data-id="1"></button>
       <button class="btn-icon" title="Modifica" data-id="1"></button>
       <button class="btn-icon" title="Visualizza Dashboard" data-id="1"></button>
+      <button id="btn-elimina-progetto" style="display:none"></button>
+      <button id="btn-vai-progetto" style="display:none"></button>
     `;
     // Recupera riferimenti agli elementi del DOM per l'uso nei test
     modal = document.getElementById('projectModal');

@@ -732,6 +732,74 @@ router.post('/contatti', isAuthenticated, async (req, res) => {
     }
 });
 
+// Rotta per la pagina Calendario
+router.get('/calendario', isAuthenticated, async (req, res) => {
+    try {
+        // Recupera progetti dell'utente (creati o dove è membro del team)
+        const progetti = await Progetto.findAll({
+            include: [{
+                model: Team,
+                include: [{
+                    model: Utente,
+                    attributes: ['id', 'nome', 'cognome'],
+                    where: { id: req.session.user.id }
+                }]
+            }],
+            where: {
+                [Op.or]: [
+                    { creato_da: req.session.user.id },
+                    { '$Team.Utentes.id$': req.session.user.id }
+                ]
+            }
+        });
+        const progettiScadenze = progetti.map(p => ({
+            id: p.id,
+            nome: p.nome,
+            scadenza: p.scadenza,
+            tipo: 'progetto'
+        }));
+
+        // Recupera tutte le task assegnate all'utente
+        const tasks = await TaskJson.findAll({
+            where: { userId: req.session.user.id },
+            attributes: ['id', 'titolo', 'scadenza', 'projectId']
+        });
+        const taskScadenze = tasks.map(t => ({
+            id: t.id,
+            nome: t.titolo,
+            scadenza: t.scadenza,
+            tipo: 'task',
+            projectId: t.projectId
+        }));
+
+        // Unisci tutto in un unico array
+        const eventi = [...progettiScadenze, ...taskScadenze];
+
+        res.render('calendario', {
+            user: req.session.user,
+            activePage: 'calendario',
+            eventi: JSON.stringify(eventi) // Passo come stringa JSON per JS client
+        });
+    } catch (error) {
+        logger.error('Errore nel caricamento del calendario: ' + error.message);
+        res.status(500).render('calendario', {
+            user: req.session.user,
+            activePage: 'calendario',
+            eventi: '[]',
+            error: 'Errore nel caricamento del calendario'
+        });
+    }
+});
+
+// Rotta pubblica per la pagina Crediti
+router.get('/crediti', (req, res) => {
+    if (req.session && req.session.user) {
+        res.render('crediti', { user: req.session.user, activePage: 'crediti' });
+    } else {
+        res.render('crediti', { activePage: 'crediti' });
+    }
+});
+
 /**
  * Gestione 404 personalizzata
  * Reindirizza gli utenti in base al loro stato di autenticazione

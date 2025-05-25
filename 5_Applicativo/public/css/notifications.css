@@ -1,3 +1,17 @@
+:root {
+    --primary: #5b21b6;
+    --primary-light: #7c3aed;
+    --primary-dark: #4c1d95;
+    --secondary: #f97316;
+    --background: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 4px 16px rgba(91,33,182,0.07), 0 1.5px 4px rgba(0,0,0,0.04);
+}
+
 /* Container delle notifiche */
 .notification-container {
     position: fixed;
@@ -8,16 +22,16 @@
 
 /* Stile base notifica */
 .notification {
-    background: white;
-    border-radius: 4px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     padding: 15px 25px;
     margin-bottom: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transform: translateX(120%);
-    transition: transform 0.3s ease-in-out;
-    max-width: 350px;
     font-size: 14px;
     line-height: 1.5;
+    max-width: 350px;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(120%);
 }
 
 /* Animazione di entrata */
@@ -33,9 +47,9 @@
 }
 
 .notification-success {
-    background: #dcfce7;
+    background: #d1fae5;
     border-left: 4px solid #22c55e;
-    color: #166534;
+    color: #065f46;
 }
 
 .notification-warning {

@@ -357,17 +357,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuToggles = document.querySelectorAll('#mobileMenuToggle');
     const closeSidebarButtons = document.querySelectorAll('.close-sidebar');
 
-    console.log('Sidebar debug:', {
-        sidebars,
-        overlays,
-        mobileMenuToggles,
-        closeSidebarButtons
-    });
-
     // Apri sidebar
     mobileMenuToggles.forEach(toggle => {
         toggle.addEventListener('click', () => {
-            console.log('Apro sidebar');
             sidebars.forEach(sb => { sb.classList.add('open'); sb.classList.add('active'); });
             overlays.forEach(ov => ov.classList.add('active'));
         });
@@ -376,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Chiudi sidebar con overlay
     overlays.forEach(overlay => {
         overlay.addEventListener('click', () => {
-            console.log('Chiudo sidebar con overlay');
             sidebars.forEach(sb => { sb.classList.remove('open'); sb.classList.remove('active'); });
             overlays.forEach(ov => ov.classList.remove('active'));
         });
@@ -385,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Chiudi sidebar con X
     closeSidebarButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            console.log('Chiudo sidebar con X');
             sidebars.forEach(sb => { sb.classList.remove('open'); sb.classList.remove('active'); });
             overlays.forEach(ov => ov.classList.remove('active'));
         });

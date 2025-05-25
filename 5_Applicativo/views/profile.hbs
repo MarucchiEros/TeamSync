@@ -2,8 +2,8 @@
 {{> headerHome}}
 
 <main class="main-content">
-    <h1>Profilo utente</h1>
     <div class="profile-card">
+        <h1 class="profile-title">Profilo utente</h1>
         <div class="profile-avatar-section">
             <div class="user-avatar profile-avatar">{{user.nome.[0]}}{{user.cognome.[0]}}</div>
             <div class="user-name profile-username">{{user.nome}} {{user.cognome}}</div>
@@ -70,7 +70,7 @@
                         </svg>
                     </span>
                 </div>
-                <small class="password-hint">Minimo 8 caratteri, lascia vuoto per non cambiare</small>
+                <small class="password-hint">Lascia vuoto per non cambiare</small>
             </div>
             <div class="form-actions profile-actions">
                 <button type="reset" class="btn btn-secondary">Annulla</button>

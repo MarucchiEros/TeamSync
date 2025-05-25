@@ -22,13 +22,21 @@
                 <i class="nav-icon">📊</i>
                 <span>Progetti</span>
             </a>
+            <a href="/calendario" class="nav-link {{#if (eq activePage 'calendario')}}active{{/if}}">
+                <i class="nav-icon">🗓️</i>
+                <span>Calendario</span>
+            </a>
             <a href="/profilo" class="nav-link {{#if (eq activePage 'profilo')}}active{{/if}}">
                 <i class="nav-icon">👤</i>
                 <span>Profilo</span>
             </a>
             <a href="/contatti" class="nav-link {{#if (eq activePage 'contatti')}}active{{/if}}">
                 <i class="nav-icon">✉️</i>
-                <span>Contatti</span>
+                <span>Supporto</span>
+            </a>
+            <a href="/crediti" class="nav-link {{#if (eq activePage 'crediti')}}active{{/if}}">
+                <i class="nav-icon">ℹ️</i>
+                <span>Crediti</span>
             </a>
         </nav>
         <div class="sidebar-footer">
@@ -39,7 +47,7 @@
                 </div>
             </div>
             <form id="logout-form" action="/logout" method="POST" style="margin:0;">
-                <button id="logout-btn" class="button-24" role="button" type="submit">
+                <button id="logout-btn" class="button-24 logout" role="button" type="submit">
                     <span>Logout</span>
                 </button>
             </form>

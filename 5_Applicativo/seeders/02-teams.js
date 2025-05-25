@@ -45,6 +45,30 @@ module.exports = {
         descrizione: 'Team dedicato al design e alla user experience',
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        nome: 'Team Ricerca e Sviluppo',
+        descrizione: 'Team dedicato all\'innovazione e ricerca di nuove tecnologie',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        nome: 'Team Marketing',
+        descrizione: 'Team dedicato alle strategie di marketing e comunicazione',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        nome: 'Team Supporto',
+        descrizione: 'Team dedicato al supporto clienti e assistenza',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        nome: 'Team Amministrazione',
+        descrizione: 'Team dedicato alla gestione amministrativa e contabile',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ]);
   },

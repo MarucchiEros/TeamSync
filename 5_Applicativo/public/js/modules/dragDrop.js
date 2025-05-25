@@ -92,8 +92,9 @@ export class DragDropManager {
 
                 // Recupera l'ID della task dai dati trasferiti
                 const taskId = e.dataTransfer.getData('text/plain');
-                // Calcola il nuovo stato (indice + 1 perché gli stati partono da 1)
-                const newState = index + 1;
+                // Mappa l'indice della colonna al valore di stato corretto
+                const statuses = ['da_fare', 'in_corso', 'in_revisione', 'completati'];
+                const newState = statuses[index];
 
                 try {
                     // Invoca la callback per aggiornare lo stato

@@ -535,10 +535,9 @@ class TaskManager {
         taskCard.dataset.priority = task.priorita;
         taskCard.dataset.assignedTo = task.userId ? task.userId.toString() : '';
 
-        // Usa il colore personalizzato per il bordo della task se presente, altrimenti usa il colore dell'utente
+        // Usa sempre il colore dell'utente per bordo e avatar
         const userColor = this.getUserColor(task.userId);
-        const taskColor = task.colore || userColor;
-        taskCard.style.borderLeftColor = taskColor;
+        taskCard.style.borderLeftColor = userColor;
 
         // Ottieni il nome dell'utente assegnato dalla relazione
         const nomeUtente = task.Utente ? `${task.Utente.nome} ${task.Utente.cognome}` : 'Non assegnato';
@@ -547,7 +546,7 @@ class TaskManager {
         taskCard.innerHTML = `
         <div class="task-header">
             <div class="task-title">${task.titolo}</div>
-            <div class="badge badge-${task.priorita}">${task.priorita}</div>
+            <div><span style="font-weight:600; color:#888; font-size:0.97em; margin-right:4px;">Priorità:</span><span class="badge badge-${task.priorita}">${task.priorita}</span></div>
         </div>
         <div class="task-description">${task.descrizione || ''}</div>
         <div class="task-meta">

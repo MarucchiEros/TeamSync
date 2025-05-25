@@ -68,6 +68,7 @@ export class ProjectManager {
         this.initDeleteButtons();
         this.initEditButtons();
         this.initViewButtons();
+        this.initGestisciButtons();
     }
 
     /**
@@ -105,6 +106,7 @@ export class ProjectManager {
                             projectRow.style.transition = 'opacity 0.5s ease-out';
                             projectRow.style.opacity = '0';
                             localStorage.setItem('adminSuccessMessage', 'Progetto eliminato con successo!');
+                            localStorage.setItem('activeAdminTab', 'projects');
                             setTimeout(() => {
                                 if (projectRow && projectRow.parentNode) {
                                     projectRow.parentNode.removeChild(projectRow);
@@ -259,6 +261,7 @@ export class ProjectManager {
                     if (data.success) {
                         // Aggiorna la pagina e mantieni la tab progetti attiva
                         localStorage.setItem('adminSuccessMessage', this.currentProjectId ? 'Progetto aggiornato con successo!' : 'Progetto creato con successo!');
+                        localStorage.setItem('activeAdminTab', 'projects');
                         window.location.hash = '#projects';
                         window.location.reload();
                         return;
@@ -378,4 +381,74 @@ export class ProjectManager {
     showMessage(message, isSuccess = false) {
         alert(message);
     }
-} 
+
+    /**
+     * Inizializza la gestione dei pulsanti Gestisci progetto
+     * Gestisce la gestione dei click su questi pulsanti
+     */
+    initGestisciButtons() {
+        // Gestione click su Gestisci progetto
+        document.querySelectorAll('.btn-gestisci-progetto').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const projectId = e.currentTarget.dataset.id;
+                try {
+                    const response = await fetch(`/api/projects/${projectId}`);
+                    const data = await response.json();
+                    if (data.success) {
+                        this.currentProjectId = projectId;
+                        document.getElementById('project-name').value = data.progetto.nome;
+                        document.getElementById('project-description').value = data.progetto.descrizione;
+                        document.getElementById('project-team').value = data.progetto.team_id || '';
+                        document.getElementById('project-status').value = data.progetto.stato || 'attivo';
+                        if (data.progetto.scadenza) {
+                            const date = new Date(data.progetto.scadenza);
+                            document.getElementById('project-deadline').value = date.toISOString().split('T')[0];
+                        } else {
+                            document.getElementById('project-deadline').value = '';
+                        }
+                        document.querySelector('.modal-header h2').textContent = 'Modifica Progetto';
+                        const submitButton = this.projectForm.querySelector('button[type="submit"]');
+                        submitButton.textContent = 'Salva Modifiche';
+                        // Mostra i pulsanti Elimina e Vai al progetto
+                        document.getElementById('btn-elimina-progetto').style.display = '';
+                        document.getElementById('btn-vai-progetto').style.display = '';
+                        document.getElementById('btn-vai-progetto').onclick = () => {
+                            window.location.href = `/dashboard/${projectId}`;
+                        };
+                        document.getElementById('btn-elimina-progetto').onclick = async () => {
+                            if (confirm('Sei sicuro di voler eliminare questo progetto?')) {
+                                try {
+                                    const delResponse = await fetch(`/api/projects/${projectId}`, { method: 'DELETE' });
+                                    const delData = await delResponse.json();
+                                    if (delResponse.ok && delData.success) {
+                                        localStorage.setItem('adminSuccessMessage', 'Progetto eliminato con successo!');
+                                        localStorage.setItem('activeAdminTab', 'projects');
+                                        window.location.reload();
+                                    } else {
+                                        alert(delData.message || 'Errore nell\'eliminazione del progetto');
+                                    }
+                                } catch (err) {
+                                    alert('Errore nell\'eliminazione del progetto');
+                                }
+                            }
+                        };
+                        this.projectModal.style.display = 'block';
+                    }
+                } catch (error) {
+                    alert('Errore nel recupero dei dati del progetto');
+                }
+            });
+        });
+        // Nascondi i pulsanti extra in creazione
+        if (this.newProjectBtn) {
+            this.newProjectBtn.addEventListener('click', () => {
+                document.getElementById('btn-elimina-progetto').style.display = 'none';
+                document.getElementById('btn-vai-progetto').style.display = 'none';
+            });
+        }
+    }
+}
+
+// All'avvio, chiama anche initGestisciButtons
+const manager = new ProjectManager();
+manager.initGestisciButtons && manager.initGestisciButtons(); 

@@ -99,6 +99,52 @@ module.exports = {
         team_id: 6, // Team Design
         scadenza: new Date(new Date().setMonth(new Date().getMonth() + 5)),
         stato: 'attivo'
+      },
+      {
+        nome: 'Portale HR',
+        descrizione: 'Gestione risorse umane e processi HR',
+        creato_da: 4,
+        data_creazione: new Date(),
+        team_id: 7, // Team Ricerca e Sviluppo
+        scadenza: new Date(new Date().setMonth(new Date().getMonth() + 6)),
+        stato: 'attivo'
+      },
+      {
+        nome: 'Campagna Social',
+        descrizione: 'Gestione campagne social media e pubblicità',
+        creato_da: 5,
+        data_creazione: new Date(),
+        team_id: 8, // Team Marketing
+        scadenza: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+        stato: 'attivo'
+      },
+      {
+        nome: 'Help Desk Online',
+        descrizione: 'Sistema di ticketing e supporto clienti',
+        creato_da: 6,
+        data_creazione: new Date(),
+        team_id: 9, // Team Supporto
+        scadenza: new Date(new Date().setMonth(new Date().getMonth() + 2)),
+        stato: 'attivo'
+      },
+      {
+        nome: 'Gestione Fatture',
+        descrizione: 'Gestione elettronica delle fatture aziendali',
+        creato_da: 7,
+        data_creazione: new Date(),
+        team_id: 10, // Team Amministrazione
+        scadenza: new Date(new Date().setMonth(new Date().getMonth() + 3)),
+        stato: 'attivo'
+      },
+      // Progetto 15 di esempio, senza team assegnato
+      {
+        nome: 'Progetto Generico',
+        descrizione: 'Progetto di esempio senza team specifico',
+        creato_da: 1,
+        data_creazione: new Date(),
+        team_id: null,
+        scadenza: new Date(new Date().setMonth(new Date().getMonth() + 2)),
+        stato: 'attivo'
       }
     ]);
   },

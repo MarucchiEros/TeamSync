@@ -1,0 +1,32 @@
+<title>TeamSync - Calendario</title>
+{{> headerHome}}
+<div class="calendar-container">
+    <h1 class="profile-title">Calendario</h1>
+    <div id="calendar">
+        <table class="calendar-table">
+            <thead>
+                <tr>
+                    <th>Lun</th>
+                    <th>Mar</th>
+                    <th>Mer</th>
+                    <th>Gio</th>
+                    <th>Ven</th>
+                    <th>Sab</th>
+                    <th>Dom</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{!-- Qui verranno inserite dinamicamente le settimane e i giorni del mese con le scadenze --}}
+            </tbody>
+        </table>
+    </div>
+    <div id="calendar-legend">
+        <span class="legend project-deadline"></span> Scadenza Progetto
+        <span class="legend task-deadline"></span> Scadenza Task
+    </div>
+</div>
+<script>
+    window.eventi = {{{eventi}}};
+</script>
+<script src="/js/calendar.js"></script>
+{{> footer}}

@@ -59,6 +59,8 @@ export class TeamManager {
         this.initTeamForm();
         this.initTeamMembersDisplay();
         this.restoreActiveTab();
+        this.initDeleteTeam();
+        this.initProjectMembersDisplay();
     }
 
     /**
@@ -91,12 +93,17 @@ export class TeamManager {
     hasUnsavedChanges() {
         const nome = document.getElementById('team-name').value.trim();
         const descrizione = document.getElementById('team-description').value.trim();
-        const selectedMembers = Array.from(document.querySelectorAll('input[name="membri"]:checked')).map(cb => ({
+        const selectedMembers = Array.from(document.querySelectorAll('input[name="membri"]:checked')).map(cb => {
+            const nameEl = document.querySelector(`.member-name[data-member-id="${cb.value}"]`);
+            const surnameEl = document.querySelector(`.member-surname[data-member-id="${cb.value}"]`);
+            const emailEl = document.querySelector(`.member-email[data-member-id="${cb.value}"]`);
+            return {
             id: cb.value,
-            nome: document.querySelector(`.member-name[data-member-id="${cb.value}"]`).textContent,
-            cognome: document.querySelector(`.member-surname[data-member-id="${cb.value}"]`).textContent,
-            email: document.querySelector(`.member-email[data-member-id="${cb.value}"]`).textContent
-        }));
+                nome: nameEl ? nameEl.textContent : '',
+                cognome: surnameEl ? surnameEl.textContent : '',
+                email: emailEl ? emailEl.textContent : ''
+            };
+        });
 
         if (!this.currentTeamId) {
             return nome !== '' || descrizione !== '' || selectedMembers.length > 0;
@@ -156,10 +163,10 @@ export class TeamManager {
      * Gestisce il caricamento e la visualizzazione dei dati del team
      */
     initManageButtons() {
-        document.querySelectorAll('.team-card .btn-secondary').forEach(btn => {
+        document.querySelectorAll('.team-row .btn-secondary').forEach(btn => {
             btn.addEventListener('click', async () => {
-                const teamCard = btn.closest('.team-card');
-                this.currentTeamId = teamCard.dataset.teamId;
+                const teamRow = btn.closest('.team-row');
+                this.currentTeamId = teamRow.dataset.teamId;
                 
                 try {
                     const response = await fetch(`/api/teams/${this.currentTeamId}`);
@@ -266,7 +273,7 @@ export class TeamManager {
 
                     if (data.success) {
                         const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
-                        localStorage.setItem('activeAdminTab', activeTab);
+                        localStorage.setItem('activeAdminTab', 'teams');
                         const message = this.currentTeamId ? 'Team aggiornato con successo!' : 'Team creato con successo!';
                         localStorage.setItem('adminSuccessMessage', message);
                         this.teamModal.style.display = 'none';
@@ -340,22 +347,25 @@ export class TeamManager {
      * Gestisce la visualizzazione degli avatar e il contatore
      */
     initTeamMembersDisplay() {
-        document.querySelectorAll('.team-card').forEach(card => {
-            const membersContainer = card.querySelector('.team-members');
+        document.querySelectorAll('.team-row .members-avatars').forEach(membersContainer => {
             const memberAvatars = membersContainer.querySelectorAll('.owner-avatar');
-            const memberCount = membersContainer.querySelector('.member-count');
-            
+            // Nascondi tutti
+            memberAvatars.forEach(avatar => avatar.style.display = 'none');
+            // Mostra solo i primi 4
+            memberAvatars.forEach((avatar, index) => {
+                if (index < 4) avatar.style.display = '';
+            });
+            // Rimuovi eventuale contatore precedente
+            const oldCounter = membersContainer.querySelector('.member-count');
+            if (oldCounter) oldCounter.remove();
+            // Se ci sono più di 4 membri, aggiungi il contatore come quinta icona
             if (memberAvatars.length > 4) {
-                // Limita visualizzazione avatar
-                memberAvatars.forEach((avatar, index) => {
-                    if (index >= 4) {
-                        avatar.style.display = 'none';
-                    }
-                });
-                
-                // Mostra contatore membri rimanenti
-                memberCount.textContent = `+${memberAvatars.length - 4}`;
-                memberCount.style.display = 'flex';
+                const count = memberAvatars.length - 4;
+                const counter = document.createElement('div');
+                counter.className = 'member-count';
+                counter.title = `+${count} altri membri`;
+                counter.textContent = `+${count}`;
+                membersContainer.appendChild(counter);
             }
         });
     }
@@ -381,4 +391,96 @@ export class TeamManager {
             }
         }
     }
-} 
+
+    /**
+     * Inizializza la gestione della cancellazione di un team
+     * Gestisce la cancellazione del team e la gestione della notifica
+     */
+    initDeleteTeam() {
+        document.querySelectorAll('.btn-icon[title="Elimina"]').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const teamRow = e.currentTarget.closest('.team-row');
+                if (!teamRow) return;
+                if (confirm('Sei sicuro di voler eliminare questo team?')) {
+                    try {
+                        const response = await fetch(`/api/teams/${teamRow.dataset.id}`, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                            teamRow.style.transition = 'opacity 0.5s ease-out';
+                            teamRow.style.opacity = '0';
+                            localStorage.setItem('adminSuccessMessage', 'Team eliminato con successo!');
+                            localStorage.setItem('activeAdminTab', 'teams');
+                            setTimeout(() => {
+                                if (teamRow && teamRow.parentNode) {
+                                    teamRow.parentNode.removeChild(teamRow);
+                                }
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            this.notifications.error(data.message || 'Errore nell\'eliminazione del team');
+                        }
+                    } catch (error) {
+                        this.notifications.error('Errore nell\'eliminazione del team');
+                    }
+                }
+            });
+        });
+    }
+
+    /**
+     * Inizializza la visualizzazione dei membri nei progetti
+     * Gestisce la visualizzazione degli avatar e il contatore
+     */
+    initProjectMembersDisplay() {
+        document.querySelectorAll('.project-row .members-avatars').forEach(membersContainer => {
+            const memberAvatars = membersContainer.querySelectorAll('.owner-avatar');
+            // Nascondi tutti
+            memberAvatars.forEach(avatar => avatar.style.display = 'none');
+            // Mostra solo i primi 4
+            memberAvatars.forEach((avatar, index) => {
+                if (index < 4) avatar.style.display = '';
+            });
+            // Rimuovi eventuale contatore precedente
+            const oldCounter = membersContainer.querySelector('.member-count');
+            if (oldCounter) oldCounter.remove();
+            // Se ci sono più di 4 membri, aggiungi il contatore come quinta icona
+            if (memberAvatars.length > 4) {
+                const count = memberAvatars.length - 4;
+                const counter = document.createElement('div');
+                counter.className = 'member-count';
+                counter.title = `+${count} altri membri`;
+                counter.textContent = `+${count}`;
+                membersContainer.appendChild(counter);
+            }
+        });
+    }
+}
+
+// Chiamata all'inizializzazione (dopo il DOM ready o in init)
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof window.TeamManager !== 'undefined') {
+        window.TeamManager.prototype.initProjectMembersDisplay();
+    } else {
+        // fallback: chiama direttamente se istanza già creata
+        if (window.teamManager && typeof window.teamManager.initProjectMembersDisplay === 'function') {
+            window.teamManager.initProjectMembersDisplay();
+        }
+    }
+});
+
+// Limita la descrizione dei team nella tabella a 60 caratteri
+function truncateTeamDescriptions() {
+    document.querySelectorAll('.team-row td:nth-child(2)').forEach(td => {
+        const maxLen = 60;
+        const text = td.textContent.trim();
+        if (text.length > maxLen) {
+            td.textContent = text.slice(0, maxLen) + '…';
+            td.title = text;
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', truncateTeamDescriptions); 

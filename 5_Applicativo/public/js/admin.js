@@ -4,7 +4,7 @@
  */
 
 import { AuthManager } from './modules/auth.js';
-import { initUI } from './modules/ui.js';
+import { initUI, enableTableSort } from './modules/ui.js';
 import { TeamManager } from './modules/teams.js';
 import { ProjectManager } from './modules/projects.js';
 import { UserManager } from './modules/users.js';
@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     new ProjectManager();
     new UserManager();
     new SearchManager();
+
+    // Abilita il sort su tutte le tabelle principali
+    enableTableSort('.data-table');
 
     // Attiva la tab 'Progetti' se l'URL contiene #projects
     if (window.location.hash === '#projects') {

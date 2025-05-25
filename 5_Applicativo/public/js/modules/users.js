@@ -45,6 +45,7 @@ export class UserManager {
         this.initFormSubmit();
         this.initDeleteButtons();
         this.initEditButtons();
+        this.initGestisciButtons();
     }
 
     /**
@@ -145,12 +146,13 @@ export class UserManager {
                     if (response.ok) {
                         this.closeModal();
                         localStorage.setItem('adminSuccessMessage', this.currentUserId ? 'Utente aggiornato con successo!' : 'Utente creato con successo!');
+                        localStorage.setItem('activeAdminTab', 'users');
                         window.location.reload();
                     } else {
                         throw new Error(data.message || 'Errore nella gestione dell\'utente');
                     }
                 } catch (error) {
-                    showMessage('Errore nella gestione dell\'utente. Riprova più tardi.', false);
+                    showMessage('Non puoi passare da admin a user', false);
                 }
             });
         }
@@ -161,7 +163,15 @@ export class UserManager {
      * Gestisce il caricamento e la visualizzazione dei dati utente
      */
     initEditButtons() {
-        document.querySelectorAll('.btn-icon[title="Modifica"]').forEach(button => {
+        // Seleziona i bottoni di modifica dentro #users-tab se esiste, altrimenti globalmente (per i test)
+        let buttons;
+        const usersTab = document.getElementById('users-tab');
+        if (usersTab) {
+            buttons = usersTab.querySelectorAll('.btn-icon[title="Modifica"]');
+        } else {
+            buttons = document.querySelectorAll('.btn-icon[title="Modifica"]');
+        }
+        buttons.forEach(button => {
             button.addEventListener('click', async (e) => {
                 const userId = e.currentTarget.dataset.id;
                 button.disabled = true;
@@ -229,18 +239,88 @@ export class UserManager {
                             userRow.style.transition = 'opacity 0.5s ease-out';
                             userRow.style.opacity = '0';
                             localStorage.setItem('adminSuccessMessage', 'Utente eliminato con successo!');
+                            localStorage.setItem('activeAdminTab', 'users');
                             setTimeout(() => {
                                 if (userRow && userRow.parentNode) {
                                     userRow.parentNode.removeChild(userRow);
                                 }
                                 window.location.reload();
                             }, 500);
+                        } else if (response.status === 403) {
+                            showMessage(data.message || 'Non puoi eliminare te stesso.', false);
                         } else {
-                            throw new Error(data.message || 'Errore nell\'eliminazione dell\'utente');
+                            showMessage(data.message || 'Errore nell\'eliminazione dell\'utente', false);
                         }
                     } catch (error) {
                         showMessage('Errore nell\'eliminazione dell\'utente. Riprova più tardi.', false);
                     }
+                }
+            });
+        });
+    }
+
+    initGestisciButtons() {
+        document.querySelectorAll('.btn-gestisci-utente').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const userId = e.currentTarget.dataset.id;
+                button.disabled = true;
+                try {
+                    const response = await fetch(`/api/users/${userId}`);
+                    const data = await response.json();
+                    if (response.ok) {
+                        this.currentUserId = userId;
+                        document.getElementById('user-name').value = data.nome;
+                        document.getElementById('user-surname').value = data.cognome;
+                        document.getElementById('user-email').value = data.email;
+                        document.getElementById('user-role').value = data.ruolo;
+                        // Nascondi campo password e rimuovi required
+                        const passwordField = document.getElementById('user-password');
+                        passwordField.parentElement.style.display = 'none';
+                        passwordField.required = false;
+                        document.querySelector('.modal-header h2').textContent = 'Modifica Utente';
+                        const submitButton = this.userForm.querySelector('button[type="submit"]');
+                        submitButton.textContent = 'Salva Modifiche';
+                        // Aggiungi pulsante Elimina se non esiste già
+                        let deleteBtn = this.userForm.querySelector('.btn-elimina-utente');
+                        if (!deleteBtn) {
+                            deleteBtn = document.createElement('button');
+                            deleteBtn.type = 'button';
+                            deleteBtn.className = 'btn btn-elimina-utente';
+                            deleteBtn.textContent = 'Elimina';
+                            // Inserisci il bottone Elimina PRIMA di .form-actions
+                            const formActions = this.userForm.querySelector('.form-actions');
+                            this.userForm.insertBefore(deleteBtn, formActions);
+                            deleteBtn.addEventListener('click', async () => {
+                                if (confirm('Sei sicuro di voler eliminare questo utente?')) {
+                                    try {
+                                        const delResponse = await fetch(`/api/users/${userId}`, {
+                                            method: 'DELETE',
+                                            headers: { 'Content-Type': 'application/json' }
+                                        });
+                                        const delData = await delResponse.json();
+                                        if (delResponse.ok) {
+                                            this.closeModal();
+                                            localStorage.setItem('adminSuccessMessage', 'Utente eliminato con successo!');
+                                            localStorage.setItem('activeAdminTab', 'users');
+                                            window.location.reload();
+                                        } else {
+                                            showMessage(delData.message || 'Errore nell\'eliminazione dell\'utente', false);
+                                        }
+                                    } catch (error) {
+                                        showMessage('Errore nell\'eliminazione dell\'utente. Riprova più tardi.', false);
+                                    }
+                                }
+                            });
+                        }
+                        this.userModal.style.display = 'block';
+                        this.formHasChanges = false;
+                    } else {
+                        throw new Error(data.message || 'Errore nel caricamento dei dati dell\'utente');
+                    }
+                } catch (error) {
+                    showMessage('Errore nel caricamento dei dati dell\'utente. Riprova più tardi.', false);
+                } finally {
+                    button.disabled = false;
                 }
             });
         });

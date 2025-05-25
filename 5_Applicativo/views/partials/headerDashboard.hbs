@@ -26,6 +26,10 @@
                 <i class="nav-icon">👥</i>
                 <span>Team</span>
             </a>
+            <a href="/home" class="nav-link">
+                <i class="nav-icon">🏠</i>
+                <span>Home</span>
+            </a>
         </nav>
         <div class="sidebar-footer">
             <div class="user-profile">
@@ -34,9 +38,11 @@
                     <span class="user-name">{{user.nome}} {{user.cognome}}</span>
                 </div>
             </div>
-            <a href="/home" class="button-24" role="button">
-                <span>Back to Home</span>
-            </a>
+            <form id="logout-form" action="/logout" method="POST" style="margin:0;">
+                <button id="logout-btn" class="button-24 logout" role="button" type="submit">
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
     </aside>
     <!-- Main Content -->
